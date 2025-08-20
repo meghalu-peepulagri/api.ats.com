@@ -6,9 +6,13 @@ import NotFoundException from "../exceptions/notFoundException.js";
 import UnprocessableContentException from "../exceptions/unProcessableContentException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { checkApplicantByEmail, createApplicant, getApplicantById, getRecordsCount, listApplicants, updateStatusApplicant } from "../service/applicantsService.js";
+import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { vCreateApplicant } from "../validations/applicants.js";
+import FileController from "./fileController.js";
 const applicantHelper = new ApplicantHelper();
+const fileController = new FileController();
+const s3Service = new S3FileService();
 class ApplicantsController {
     addApplicant = async (c) => {
         const reqBody = await c.req.json();
@@ -32,7 +36,12 @@ class ApplicantsController {
         if (!applicantData) {
             throw new NotFoundException("Applicant not found");
         }
-        return sendResponse(c, 200, "Applicant found", applicantData);
+        const resumeUrl = applicantData[0].resume_key_path;
+        const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
+        return sendResponse(c, 200, "Applicant found", {
+            ...applicantData,
+            presignedUrl
+        });
     };
     listApplicants = async (c) => {
         const query = c.req.query();

@@ -39,5 +39,5 @@ export function fileNameHelpers(fileName, fileType) {
         .toTimeString()
         .split(" ")[0]
         .replace(/:/g, "");
-    return `${formattedDate}_${formattedTime}_${fileOriginalName}.${fileExtension}`;
+    return `${fileOriginalName}_${formattedDate}_${formattedTime}.${fileExtension}`;
 }
