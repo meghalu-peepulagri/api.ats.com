@@ -1,8 +1,10 @@
 import type { ContentfulStatusCode } from "hono/utils/http-status";
+
 import type { Applicants, ApplicantTable } from "../database/schemas/applicants.js";
+
 export type DBTable = Applicants;
 export type DBRecord<T extends DBTable>
-  = T extends ApplicantTable ? Applicants:null
+  = T extends ApplicantTable ? Applicants : null;
 
 export interface IResp {
   status: ContentfulStatusCode;

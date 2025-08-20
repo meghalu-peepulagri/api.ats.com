@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+
 import ApplicantsController from "../controllers/applicantsController.js";
 
 const applicantsRoute = new Hono();
@@ -9,8 +10,4 @@ applicantsRoute.get("/:id", applicantsController.getApplicantById);
 applicantsRoute.get("/", applicantsController.listApplicants);
 applicantsRoute.patch("/:id", applicantsController.updateStatusApplicant);
 
-
 export default applicantsRoute;
-
-
-

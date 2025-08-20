@@ -33,11 +33,6 @@ export function fileNameHelpers(fileName, fileType) {
     // clean original name
     fileOriginalName = makeSlug(fileOriginalName);
     // date + time formatting
-    const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().split("T")[0];
-    const formattedTime = currentDate
-        .toTimeString()
-        .split(" ")[0]
-        .replace(/:/g, "");
-    return `${fileOriginalName}_${formattedDate}_${formattedTime}.${fileExtension}`;
+    const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, "");
+    return `${fileOriginalName}_${timestamp}.${fileExtension}`;
 }

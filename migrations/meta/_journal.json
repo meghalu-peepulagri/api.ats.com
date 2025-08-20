@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1755598503733,
-      "tag": "0000_curious_harpoon",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1755664060593,
-      "tag": "0001_wide_power_pack",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1755664145198,
-      "tag": "0002_purple_spectrum",
+      "when": 1755678276360,
+      "tag": "0000_lean_fallen_one",
       "breakpoints": true
     }
   ]

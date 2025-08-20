@@ -25,7 +25,6 @@ export function fileNameHelper(fileName: string) {
   return uniqueFileName;
 };
 
-
 export function fileNameHelpers(fileName: string, fileType: string) {
   let [fileOriginalName, fileExtension] = fileName.split(".");
 
@@ -33,7 +32,8 @@ export function fileNameHelpers(fileName: string, fileType: string) {
   if (!fileExtension) {
     if (fileType.includes("/")) {
       fileExtension = fileType.split("/")[1];
-    } else {
+    }
+    else {
       fileExtension = fileType;
     }
   }
@@ -42,12 +42,7 @@ export function fileNameHelpers(fileName: string, fileType: string) {
   fileOriginalName = makeSlug(fileOriginalName);
 
   // date + time formatting
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split("T")[0];
-  const formattedTime = currentDate
-    .toTimeString()
-    .split(" ")[0]
-    .replace(/:/g, "");
+  const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, "");
 
-  return `${fileOriginalName}_${formattedDate}_${formattedTime}.${fileExtension}`;
+  return `${fileOriginalName}_${timestamp}.${fileExtension}`;
 }

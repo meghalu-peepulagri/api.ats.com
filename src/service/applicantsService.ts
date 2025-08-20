@@ -1,15 +1,32 @@
-
 import { and, count, eq } from "drizzle-orm";
+
+import type { NewApplicant } from "../database/schemas/applicants.js";
+
 import db from "../database/configuration.js";
-import { applicants, type NewApplicant } from "../database/schemas/applicants.js";
+import { applicants } from "../database/schemas/applicants.js";
 
 export async function getAllApplicants() {
   return await db.select().from(applicants);
 }
 export async function createApplicant(reqBody: NewApplicant) {
-  return await db.insert(applicants)
-  .values(reqBody).
-  returning();
+  try {
+    const result = await db.insert(applicants)
+      .values({
+        first_name: reqBody.first_name,
+        last_name: reqBody.last_name,
+        email: reqBody.email,
+        phone: reqBody.phone,
+        role: reqBody.role ?? "Applicant",
+        status: reqBody.status ?? "pending",
+        resume_key_path: reqBody.resume_key_path,
+      })
+
+      .returning();
+    return result;
+  }
+  catch (err) {
+    throw new Error(err);
+  }
 }
 
 export async function getApplicantById(id: number) {
@@ -24,17 +41,30 @@ export async function checkApplicantByEmail(email: string) {
   return result.length > 0;
 }
 
+export async function checkApplicantByPhone(phone: string) {
+  const result = await db
+    .select()
+    .from(applicants)
+    .where(eq(applicants.phone, phone));
+  return result.length > 0;
+}
+
+export async function checkApplicantResumeKey(resume_key_path: string) {
+  const result = await db
+    .select()
+    .from(applicants)
+    .where(eq(applicants.resume_key_path, resume_key_path));
+  return result.length > 0;
+}
+
 export async function updateStatusApplicant(id: number, status: string) {
   return await db.update(applicants).set({ status }).where(eq(applicants.id, id)).returning();
-
 }
 
 export async function listApplicants(filters: any, offset: number, limit: number) {
-
   const result = await db.select({ firstname: applicants.first_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at }).from(applicants);
   return result;
 }
-
 
 export async function getRecordsCount(table: any, filters?: any) {
   const intialQuery = db.select({ total: count() }).from(applicants);
@@ -47,7 +77,6 @@ export async function getRecordsCount(table: any, filters?: any) {
     finalQuery = intialQuery;
   }
   const result = await finalQuery;
-  console.log('result: ', result);
 
   return result[0].total;
 }

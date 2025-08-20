@@ -3,11 +3,11 @@ export const VUploadFileSchema = z.object({
     file_type: z.literal("pdf").or(z.literal("application/pdf")), // allows both
     file_name: z.string()
         .min(1, { message: "FILE_MISSING" })
-        .refine((val) => val.trim().length > 0, {
+        .refine(val => val.trim().length > 0, {
         message: "FILE_NAME_INVALID",
     }),
     file_size: z.union([
-        z.number().refine((val) => !isNaN(val), {
+        z.number().refine(val => !isNaN(val), {
             message: "FILE_SIZE_IS_NUMBER",
         }),
         z.null(),
@@ -16,7 +16,7 @@ export const VUploadFileSchema = z.object({
 export const VDownloadFileSchema = z.object({
     file_key: z.string()
         .min(1, { message: "FILE_KEY_MISSING" })
-        .refine((val) => val.trim().length > 0, {
+        .refine(val => val.trim().length > 0, {
         message: "FILE_KEY_INVALID",
     }),
 });

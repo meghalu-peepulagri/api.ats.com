@@ -1,6 +1,7 @@
 import type { ErrorHandler } from "hono";
-import type { StatusCode, ContentfulStatusCode } from "hono/utils/http-status";
-import type { Context } from "vm";
+import type { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
+import type { Context } from "node:vm";
+
 import { OK } from "zod/v3";
 
 const onError: ErrorHandler = (err: any, c: Context) => {

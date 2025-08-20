@@ -1,5 +1,5 @@
 {
-  "id": "a3dbbbc0-04bf-40ba-8609-95cf0d92016a",
+  "id": "1bbb7b8c-20ab-4760-8992-731655e90780",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -50,6 +50,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "resume_key_path": {
+          "name": "resume_key_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -87,6 +93,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "phone"
+          ]
+        },
+        "applicants_resume_key_path_unique": {
+          "name": "applicants_resume_key_path_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "resume_key_path"
           ]
         }
       },

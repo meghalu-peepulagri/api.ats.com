@@ -5,9 +5,23 @@ export async function getAllApplicants() {
     return await db.select().from(applicants);
 }
 export async function createApplicant(reqBody) {
-    return await db.insert(applicants)
-        .values(reqBody).
-        returning();
+    try {
+        const result = await db.insert(applicants)
+            .values({
+            first_name: reqBody.first_name,
+            last_name: reqBody.last_name,
+            email: reqBody.email,
+            phone: reqBody.phone,
+            role: reqBody.role ?? "Applicant",
+            status: reqBody.status ?? "pending",
+            resume_key_path: reqBody.resume_key_path,
+        })
+            .returning();
+        return result;
+    }
+    catch (err) {
+        throw new Error(err);
+    }
 }
 export async function getApplicantById(id) {
     return await db.select().from(applicants).where(eq(applicants.id, id));
@@ -17,6 +31,20 @@ export async function checkApplicantByEmail(email) {
         .select()
         .from(applicants)
         .where(eq(applicants.email, email));
+    return result.length > 0;
+}
+export async function checkApplicantByPhone(phone) {
+    const result = await db
+        .select()
+        .from(applicants)
+        .where(eq(applicants.phone, phone));
+    return result.length > 0;
+}
+export async function checkApplicantResumeKey(resume_key_path) {
+    const result = await db
+        .select()
+        .from(applicants)
+        .where(eq(applicants.resume_key_path, resume_key_path));
     return result.length > 0;
 }
 export async function updateStatusApplicant(id, status) {
@@ -36,6 +64,5 @@ export async function getRecordsCount(table, filters) {
         finalQuery = intialQuery;
     }
     const result = await finalQuery;
-    console.log('result: ', result);
     return result[0].total;
 }
