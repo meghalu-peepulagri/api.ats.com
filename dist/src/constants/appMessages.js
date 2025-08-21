@@ -6,6 +6,21 @@ export const TOKENS_GENERATED = "Successfully generated tokens";
 export const REFRESH_TOKEN_REQUIRED = "refresh token required";
 export const INVALID_REFRESH_TOKEN = "Invalid refresh token";
 export const USER_INACTIVE = "User is inactive";
+// User
+export const ADD_USER_VALIDATION_CRITERIA = "User details provided do not meet the required validation criteria";
+export const LOGIN_VALIDATION_CRETERIA = "Login details provided do not meet the required validation criteria";
+export const EMAIL_EXIST = "Email already exist";
+export const USER_CREATED = "User created successfully";
+export const USER_NOT_FOUND = "User not found";
+export const EMAIL_ID_REQUIRED = "Email id is required";
+export const INVALID_EMAIL_ID = "Invalid email id";
+export const PASSWORD_REQUIRED = "Password is required";
+export const INVALID_PASSWORD = "Invalid password";
+export const INCORRECT_PASSWORD = "Incorrect password";
+// comment
+export const ADD_COMMENT_VALIDATION_CRITERIA = "Comment details provided do not meet the required validation criteria";
+export const INVALID_APPLICANT_ID = "Invalid applicant id";
+export const COMMENT_CREATED = "Comment created successfully";
 // Applicant
 export const ADD_APPLICANT_VALIDATION_CRITERIA = "Add applicant details provided do not meet the required validation criteria";
 export const EMAIL_EXISTED = "Email already exists";

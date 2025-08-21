@@ -122,7 +122,7 @@ async function getMultipleRecordsByMultipleColumnValues<R extends DBTableRow, C 
   return results;
 }
 
-async function getSingleRecordByAColumnValue<R extends DBTableRow, C extends keyof R = keyof R>(table: DBTable, column: C, value: any, operator?: any[], columnsToSelect?: any, orderByQueryData?: OrderByQueryData<R>, inQueryData?: InQueryData<R>) {
+async function getSingleRecordByAColumnValue<R extends DBTableRow, C extends keyof R = keyof R>(table: DBTable, column: C, value: any, operator?: any, columnsToSelect?: any, orderByQueryData?: OrderByQueryData<R>, inQueryData?: InQueryData<R>) {
   const whereQueryData: WhereQueryData<R> = {
     columns: [column],
     values: [value],

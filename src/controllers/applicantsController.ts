@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 
 import type { Applicant } from "../database/schemas/applicants.js";
-import type { TCreateApplicant } from "../validations/applicants.js";
+import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
 import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
@@ -46,7 +46,7 @@ class ApplicantsController {
     if (!applicantData || applicantData.deleted_at !== null) {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
-    const resumeUrl = applicantData[0].resume_key_path;
+    const resumeUrl = applicantData.resume_key_path;
     const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
 
     return sendResponse(c, 200, APPLICANT_NOT_FOUND, {

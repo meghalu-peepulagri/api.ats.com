@@ -14,6 +14,6 @@ export const applicants = pgTable("applicants", {
     updated_at: timestamp("updated_at").notNull().defaultNow(),
     deleted_at: timestamp("deleted_at"),
 }, t => [
-    index("applicants_email_idx").on(t.email),
-    index("applicants_phone_idx").on(t.phone),
+    index("applicants_id_idx").on(t.email),
+    index("applicants_first_name_idx").on(t.phone),
 ]);

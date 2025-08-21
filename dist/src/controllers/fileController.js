@@ -4,7 +4,7 @@ import UnprocessableContentException from "../exceptions/unProcessableContentExc
 import S3FileService from "../service/s3Service.js";
 import { fileNameHelpers } from "../utils/appUtils.js";
 import { sendResponse } from "../utils/sendResponse.js";
-import { VDownloadFileSchema, VUploadFileSchema } from "../validations/file.js";
+import { VDownloadFileSchema, VUploadFileSchema } from "../validations/schema/file.js";
 const s3Service = new S3FileService();
 class FileController {
     getUploadURL = async (c) => {

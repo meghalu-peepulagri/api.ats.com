@@ -39,7 +39,7 @@ class ApplicantsController {
         if (!applicantData || applicantData.deleted_at !== null) {
             throw new NotFoundException(APPLICANT_NOT_FOUND);
         }
-        const resumeUrl = applicantData[0].resume_key_path;
+        const resumeUrl = applicantData.resume_key_path;
         const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
         return sendResponse(c, 200, APPLICANT_NOT_FOUND, {
             ...applicantData,

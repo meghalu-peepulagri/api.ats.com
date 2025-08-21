@@ -3,6 +3,7 @@ import type { SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
 import { applicants } from "../database/schemas/applicants.js";
+import { comments } from "../database/schemas/comments.js";
 
 export class ApplicantHelper {
   applicants = async (query: any) => {
@@ -14,6 +15,16 @@ export class ApplicantHelper {
       filters.push(
         sql`(${applicants.first_name} ILIKE ${searchTerm} OR ${applicants.email} ILIKE ${searchTerm} OR ${applicants.phone} ILIKE ${searchTerm})`,
       );
+    }
+    return filters;
+  };
+
+  comments = async (query: any) => {
+    const filters: SQL[] = [];
+    const search_string = query?.search_string || null;
+    if (search_string?.trim()) {
+      const searchTerm = `%${search_string.trim().replace(/\s+/g, "%")}%`;
+      filters.push(sql`(${comments.comment_description} ILIKE ${searchTerm})`);
     }
     return filters;
   };

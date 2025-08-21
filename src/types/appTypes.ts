@@ -2,11 +2,13 @@ import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 import type { Applicant, ApplicantTable } from "../database/schemas/applicants.js";
 import type { User, UsersTable } from "../database/schemas/users.js";
-import type { TCreateApplicant } from "../validations/applicants.js";
+import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
+import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
+import type { VCreateUserSchema, VUserLoginSchema } from "../validations/schema/createUserValidation.js";
 
-export type ValidatedRequest = TCreateApplicant;
+export type ValidatedRequest = TCreateApplicant | VCreateUserSchema | VUserLoginSchema | ValidateCreateSchema;
 
-export type AppActivity = "add-applicant";
+export type AppActivity = "add-applicant" | "add-user" | "login" | "add-comment";
 
 export type DBTable = ApplicantTable;
 export type DBRecord<T extends DBTable>

@@ -4,10 +4,15 @@ import type { AppActivity, ValidatedRequest } from "../types/appTypes.js";
 
 import UnprocessableEntityException from "../exceptions/unProcessableEntityException.js";
 import { getValidationErrors } from "../utils/onError.js";
-import { vCreateApplicant } from "./applicants.js";
+import { vAddComment } from "./schema/addCommentSchema.js";
+import { vCreateApplicant } from "./schema/applicants.js";
+import { VCreateUser, vUserLogin } from "./schema/createUserValidation.js";
 
 const schemaMap: Record<AppActivity, ZodSchema | undefined> = {
   "add-applicant": vCreateApplicant,
+  "add-user": VCreateUser,
+  "login": vUserLogin,
+  "add-comment": vAddComment,
 };
 
 export async function validatedRequest<R extends ValidatedRequest>(

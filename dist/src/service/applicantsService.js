@@ -1,6 +1,7 @@
 import { and, count, desc, eq } from "drizzle-orm";
 import db from "../database/configuration.js";
 import { applicants } from "../database/schemas/applicants.js";
+import { comments } from "../database/schemas/comments.js";
 export async function getAllApplicants() {
     return await db.select().from(applicants);
 }
@@ -70,4 +71,17 @@ export async function getRecordsCount(table, filters) {
     }
     const result = await finalQuery;
     return result[0].total;
+}
+export async function getAllComments(filters, offset, limit, UserId) {
+    const result = await db.select({
+        id: comments.id,
+        comment_description: comments.comment_description,
+        commented_by: comments.commented_by,
+        commented_at: comments.commented_at,
+    })
+        .from(comments)
+        .where(and(...filters, eq(comments.commented_by, UserId.toString())))
+        .offset(offset)
+        .limit(limit);
+    return result;
 }

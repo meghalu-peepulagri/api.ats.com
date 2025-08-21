@@ -17,5 +17,5 @@ export const comments = pgTable("comments", {
 ]);
 
 export type CommentsTable = typeof comments;
-export type Comment = typeof comments.$inferSelect;
+export type Comments = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
