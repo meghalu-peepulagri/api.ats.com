@@ -15,5 +15,5 @@ export const applicants = pgTable("applicants", {
 });
 
 export type ApplicantTable = typeof applicants;
-export type Applicants = typeof applicants.$inferSelect;
+export type Applicant = typeof applicants.$inferSelect;
 export type NewApplicant = typeof applicants.$inferInsert;

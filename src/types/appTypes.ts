@@ -1,10 +1,15 @@
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
-import type { Applicants, ApplicantTable } from "../database/schemas/applicants.js";
+import type { Applicant, ApplicantTable } from "../database/schemas/applicants.js";
+import type { TCreateApplicant } from "../validations/applicants.js";
 
-export type DBTable = Applicants;
+export type ValidatedRequest = TCreateApplicant;
+
+export type AppActivity = "add-applicant";
+
+export type DBTable = ApplicantTable;
 export type DBRecord<T extends DBTable>
-  = T extends ApplicantTable ? Applicants : null;
+  = T extends ApplicantTable ? Applicant : null;
 
 export interface IResp {
   status: ContentfulStatusCode;

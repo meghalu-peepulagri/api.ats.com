@@ -1,41 +1,39 @@
 import type { Context } from "hono";
 
-import { safeParse } from "zod";
+import type { Applicant } from "../database/schemas/applicants.js";
+import type { TCreateApplicant } from "../validations/applicants.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_NOT_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
-import UnprocessableContentException from "../exceptions/unProcessableContentException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
-import { checkApplicantByEmail, checkApplicantByPhone, checkApplicantResumeKey, createApplicant, getApplicantById, getRecordsCount, listApplicants, updateStatusApplicant } from "../service/applicantsService.js";
+import { getRecordsCount, listApplicants } from "../service/applicantsService.js";
+import { getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
-import { vCreateApplicant } from "../validations/applicants.js";
+import { validatedRequest } from "../validations/validateRequest.js";
 
 const applicantHelper = new ApplicantHelper();
 const s3Service = new S3FileService();
 class ApplicantsController {
   addApplicant = async (c: Context) => {
     const reqBody = await c.req.json();
-    const validatedReqData = safeParse(vCreateApplicant, reqBody);
-    if (!validatedReqData.success) {
-      throw new UnprocessableContentException(ADD_APPLICANT_VALIDATION_CRITERIA, validatedReqData.error);
-    }
-    const existingApplicant = await checkApplicantByEmail(reqBody.email);
-    if (existingApplicant) {
+    const validatedReqData = await validatedRequest<TCreateApplicant>("add-applicant", reqBody, ADD_APPLICANT_VALIDATION_CRITERIA);
+    const existingApplicantEmail = await getSingleRecordByAColumnValue<Applicant>(applicants, "email", validatedReqData.email);
+    if (existingApplicantEmail) {
       throw new ConflictException(EMAIL_EXISTED);
     }
-    const existingApplicantPhoneNumber = await checkApplicantByPhone(reqBody.phone);
-    if (existingApplicantPhoneNumber) {
-      throw new ConflictException(PHONE_NUMBER_EXISTED);
-    }
-    const existingApplicantResumeKey = await checkApplicantResumeKey(reqBody.resume_key_path);
+    const existingApplicantResumeKey = await getSingleRecordByAColumnValue<Applicant>(applicants, "resume_key_path", validatedReqData.resume_key_path);
     if (existingApplicantResumeKey) {
       throw new ConflictException(RESUME_KEY_EXISTED);
     }
-    const newApplicant = await createApplicant(validatedReqData.data);
+    const existingApplicantPhoneNumber = await getSingleRecordByAColumnValue<Applicant, "phone">(applicants, "phone", validatedReqData.phone);
+    if (existingApplicantPhoneNumber) {
+      throw new ConflictException(PHONE_NUMBER_EXISTED);
+    }
+    const newApplicant = await saveSingleRecord<Applicant>(applicants, validatedReqData);
     return sendResponse(c, 201, APPLICANT_CREATED, newApplicant);
   };
 
@@ -44,8 +42,8 @@ class ApplicantsController {
     if (!applicantId) {
       throw new BadRequestException(APPLICANT_ID_REQUIRED);
     }
-    const applicantData = await getApplicantById(+applicantId);
-    if (!applicantData) {
+    const applicantData = await getRecordById<Applicant>(applicants, +applicantId);
+    if (!applicantData || applicantData.deleted_at !== null) {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
     const resumeUrl = applicantData[0].resume_key_path;
@@ -68,7 +66,7 @@ class ApplicantsController {
       listApplicants(filters, offset, limit),
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
-    return sendResponse(c, 200, APPLICANTS_NOT_FOUND, {
+    return sendResponse(c, 200, APPLICANTS_FOUND, {
       pagination: paginationData,
       applicants: applicantsData,
     });
@@ -80,16 +78,15 @@ class ApplicantsController {
     if (!applicantId) {
       throw new BadRequestException(APPLICANT_ID_REQUIRED);
     }
-    const applicant = await getApplicantById(+applicantId);
-    if (!applicant) {
+    const applicant = await getRecordById<Applicant>(applicants, +applicantId);
+    if (!applicant || applicant.deleted_at !== null) {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
     const updatedStatus = reqBody.status;
     if (!updatedStatus) {
       throw new BadRequestException(STATUS_IS_REQUIRED);
     }
-
-    const updatedApplicant = await updateStatusApplicant(+applicantId, updatedStatus);
+    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
 }

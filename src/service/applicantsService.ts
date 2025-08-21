@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 
 import type { NewApplicant } from "../database/schemas/applicants.js";
 
@@ -62,7 +62,12 @@ export async function updateStatusApplicant(id: number, status: string) {
 }
 
 export async function listApplicants(filters: any, offset: number, limit: number) {
-  const result = await db.select({ firstname: applicants.first_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at }).from(applicants);
+  const result = await db.select({ firstname: applicants.first_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at })
+    .from(applicants)
+    .where(and(...filters))
+    .offset(offset)
+    .limit(limit)
+    .orderBy(desc(applicants.created_at));
   return result;
 }
 

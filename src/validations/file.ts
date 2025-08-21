@@ -8,7 +8,7 @@ export const VUploadFileSchema = z.object({
       message: "FILE_NAME_INVALID",
     }),
   file_size: z.union([
-    z.number().refine(val => !isNaN(val), {
+    z.number().refine(val => Number.isNaN(val), {
       message: "FILE_SIZE_IS_NUMBER",
     }),
     z.null(),

@@ -11,6 +11,7 @@ export const APPLICANT_NOT_FOUND = "Applicant not found";
 export const APPLICANTS_NOT_FOUND = "Applicants not found";
 export const STATUS_IS_REQUIRED = "Status is required";
 export const APPLICANT_UPDATED = "Applicant updated successfully";
+export const APPLICANTS_FOUND = "Applicants found successfully";
 
 // file
 
