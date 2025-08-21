@@ -5,6 +5,7 @@ export const REFRESH_TOKEN_INVALID = "Invalid refresh token";
 export const TOKENS_GENERATED = "Successfully generated tokens";
 export const REFRESH_TOKEN_REQUIRED = "refresh token required";
 export const INVALID_REFRESH_TOKEN = "Invalid refresh token";
+export const USER_INACTIVE = "User is inactive";
 // Applicant
 export const ADD_APPLICANT_VALIDATION_CRITERIA = "Add applicant details provided do not meet the required validation criteria";
 export const EMAIL_EXISTED = "Email already exists";

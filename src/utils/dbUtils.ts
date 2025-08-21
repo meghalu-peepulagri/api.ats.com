@@ -2,8 +2,7 @@ import type { SQL } from "drizzle-orm";
 
 import { eq, getTableName, inArray, isNull, ne, sql } from "drizzle-orm";
 
-import type { DBTable } from "../types/appTypes.js";
-import type { DBTableRow, InQueryData, OrderByQueryData, WhereQueryData } from "../types/dbTypes.js";
+import type { DBTable, DBTableRow, InQueryData, OrderByQueryData, WhereQueryData } from "../types/dbTypes.js";
 
 import db from "../database/configuration.js";
 

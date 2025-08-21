@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 
-import type { DBTable, PaginationInfo } from "../../types/appTypes.js";
-import type { DBNewRecord, DBNewRecords, DBTableRow, InQueryData, OrderByQueryData, UpdateRecordData, WhereQueryData } from "../../types/dbTypes.js";
+import type { PaginationInfo } from "../../types/appTypes.js";
+import type { DBNewRecord, DBNewRecords, DBTable, DBTableRow, InQueryData, OrderByQueryData, UpdateRecordData, WhereQueryData } from "../../types/dbTypes.js";
 
 import db from "../../database/configuration.js";
 import { executeQuery, prepareInQueryCondition, prepareOrderByQueryConditions, prepareSelectColumnsForQuery, prepareWhereQueryConditions } from "../../utils/dbUtils.js";

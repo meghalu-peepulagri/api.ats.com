@@ -1,11 +1,17 @@
+import type { Context } from "hono";
 import type { JWTPayload } from "hono/utils/jwt/types";
 
 import { sign, verify } from "hono/jwt";
 import { JwtTokenExpired, JwtTokenInvalid, JwtTokenSignatureMismatched } from "hono/utils/jwt/types";
 
+import type { User } from "../database/schemas/users.js";
+
 import { jwtConfig } from "../config/jwtConfig.js";
-import { TOKEN_EXPIRED, TOKEN_REQUIRED, TOKEN_SIGNATURE_MISMATCH } from "../constants/appMessages.js";
+import { TOKEN_EXPIRED, TOKEN_REQUIRED, TOKEN_SIGNATURE_MISMATCH, USER_INACTIVE } from "../constants/appMessages.js";
+import { users } from "../database/schemas/users.js";
+import ForbiddenException from "../exceptions/forbiddenException.js";
 import UnauthorizedException from "../exceptions/unAuthorizedException.js";
+import { getRecordById } from "../service/db/baseDbService.js";
 
 async function genJWTTokens(payload: JWTPayload) {
   const access_token_expiry = Math.floor(Date.now() / 1000) + jwtConfig.expires_in;
@@ -60,25 +66,25 @@ async function verifyJWTToken(token: string) {
   }
 }
 
-// async function getUserDetailsFromToken(c: Context) {
-//   const authHeader = c.req.header("Authorization");
-//   const token = authHeader?.substring(7, authHeader.length);
-//   if (!token) {
-//     throw new UnauthorizedException(TOKEN_REQUIRED);
-//   }
-//   const decodedPayload = await verifyJWTToken(token);
-//   const user = await getRecordById<UsersTable>(users, decodedPayload.sub as number);
-//   if (!user?.is_active || !user) {
-//     throw new ForbiddenException(USER_INACTIVE);
-//   }
-//   const { created_at, updated_at, ...userDetails } = user;
+async function getUserDetailsFromToken(c: Context) {
+  const authHeader = c.req.header("Authorization");
+  const token = authHeader?.substring(7, authHeader.length);
+  if (!token) {
+    throw new UnauthorizedException(TOKEN_REQUIRED);
+  }
+  const decodedPayload = await verifyJWTToken(token);
+  const user = await getRecordById<User>(users, decodedPayload.sub as number);
+  if (!user?.is_active || !user) {
+    throw new ForbiddenException(USER_INACTIVE);
+  }
+  const { created_at, updated_at, ...userDetails } = user;
 
-//   return userDetails;
-// }
+  return userDetails;
+}
 
 export {
   genJWTTokens,
   genJWTTokensForUser,
-  //   getUserDetailsFromToken,
+  getUserDetailsFromToken,
   verifyJWTToken,
 };
