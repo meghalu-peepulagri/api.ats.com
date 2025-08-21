@@ -1,9 +1,10 @@
 import type { Applicant, ApplicantTable, NewApplicant } from "../database/schemas/applicants.js";
+import type { NewUser, User, UsersTable } from "../database/schemas/users.js";
 
-export type DBTable = ApplicantTable;
-export type DBNewRecord = NewApplicant;
-export type DBTableRow = Applicant;
-export type DBNewRecords = NewApplicant[];
+export type DBTable = ApplicantTable | UsersTable;
+export type DBTableRow = Applicant | User;
+export type DBNewRecord = NewApplicant | NewUser;
+export type DBNewRecords = NewApplicant[] | NewUser[];
 
 export type DBTableColumns<T extends DBTableRow> = keyof T;
 export type SortDirection = "asc" | "desc";
