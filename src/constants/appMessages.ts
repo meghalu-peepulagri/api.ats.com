@@ -1,3 +1,5 @@
+export const SERVICE_UP = "Service is up and running";
+
 export const TOKEN_REQUIRED = "Access token is required";
 export const TOKEN_EXPIRED = "Session is expired";
 export const TOKEN_SIGNATURE_MISMATCH = "Access token signature mismatch";
