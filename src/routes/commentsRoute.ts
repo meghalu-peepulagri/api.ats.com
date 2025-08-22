@@ -8,5 +8,4 @@ const commentsController = new CommentsController();
 
 commentsRoute.post("/:id", isAuthenticated, commentsController.addCommentToApplicant.bind(commentsController));
 commentsRoute.get("/:id", isAuthenticated, commentsController.listComments.bind(commentsController));
-
 export default commentsRoute;

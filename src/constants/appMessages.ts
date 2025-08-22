@@ -25,7 +25,8 @@ export const INCORRECT_PASSWORD = "Incorrect password";
 
 export const ADD_COMMENT_VALIDATION_CRITERIA = "Comment details provided do not meet the required validation criteria";
 export const INVALID_APPLICANT_ID = "Invalid applicant id";
-export const COMMENT_CREATED = "Comment created successfully";
+export const COMMENT_CREATED = "Comment added successfully";
+export const COMMENTS_FETCHED = "Comments fetched successfully";
 
 // Applicant
 export const ADD_APPLICANT_VALIDATION_CRITERIA = "Add applicant details provided do not meet the required validation criteria";
@@ -41,6 +42,7 @@ export const APPLICANTS_NOT_FOUND = "Applicants not found";
 export const STATUS_IS_REQUIRED = "Status is required";
 export const APPLICANT_UPDATED = "Applicant updated successfully";
 export const APPLICANTS_FOUND = "Applicants found successfully";
+export const APPLICANT_FOUND = "Applicant found successfully";
 
 // file
 
@@ -48,3 +50,4 @@ export const UPLOAD_FILE_VALIDATION_CRITERIA = "Upload file details provided do 
 
 export const UPLOAD_URL_GENERATED = "Upload url generated successfully";
 export const DOWNLOAD_URL_GENERATED = "Download url generated successfully";
+export const PRESIGNEDURL_NOT_FOUND = "Presignedurl not found";

@@ -5,6 +5,7 @@ import { OK } from "./constants/httpStatusCodes.js";
 import envData from "./env.js";
 import applicantsRoute from "./routes/applicantsRoute.js";
 import authRoute from "./routes/authRoute.js";
+import commentsRoute from "./routes/commentsRoute.js";
 import fileRoute from "./routes/fileRoutes.js";
 import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
@@ -18,6 +19,7 @@ app.get("/", (c) => {
 app.route("/auth", authRoute);
 app.route("/applicants", applicantsRoute);
 app.route("/files", fileRoute);
+app.route("/comments", commentsRoute);
 app.notFound(notFound);
 app.onError(onError);
 export default app;

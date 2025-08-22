@@ -3,7 +3,7 @@ import type { Context } from "hono";
 import argon2 from "argon2";
 import { setCookie } from "hono/cookie";
 
-import type { NewUser, User } from "../database/schemas/users.js";
+import type { User } from "../database/schemas/users.js";
 import type { VCreateUserSchema, VUserLoginSchema } from "../validations/schema/createUserValidation.js";
 
 import { appConfig } from "../config/appConfig.js";
@@ -26,13 +26,14 @@ class UsersController {
     if (signupUser && signupUser?.deleted_at === null) {
       throw new ConflictException(EMAIL_EXISTED);
     }
-    const existingUserPhone = await getSingleRecordByAColumnValue<User>(users, "phone", "=", validUserReq[0].phone);
+    const existingUserPhone = await getSingleRecordByAColumnValue<User>(users, "phone", "=", validUserReq.phone);
     if (existingUserPhone && existingUserPhone?.deleted_at === null) {
       throw new ConflictException(PHONE_NUMBER_EXISTED);
     }
     const hashedPassword = await argon2.hash(validUserReq.password);
-    const userData: NewUser = { ...validUserReq[0], password: hashedPassword };
-    const user = await saveSingleRecord(users, userData);
+    const userData: any = { ...validUserReq, password: hashedPassword };
+    const savedUser = await saveSingleRecord<User>(users, userData);
+    const { password, ...user } = savedUser;
     return sendResponse(c, CREATED, USER_CREATED, user);
   };
 
@@ -43,7 +44,7 @@ class UsersController {
     if (!loginUser || loginUser.deleted_at != null) {
       throw new NotFoundException(INVALID_EMAIL_ID);
     }
-    const hashedPassword = loginUser[0].password;
+    const hashedPassword = loginUser.password;
     const isPasswordMatched = await argon2.verify(hashedPassword, validUserReq.password);
     if (!isPasswordMatched) {
       throw new UnauthorizedException(INCORRECT_PASSWORD);

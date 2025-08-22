@@ -5,9 +5,13 @@ export class ApplicantHelper {
     applicants = async (query) => {
         const filters = [];
         const search_string = query?.search_string || null;
+        const status = query?.status || null;
         if (search_string?.trim()) {
             const searchTerm = `%${search_string.trim().replace(/\s+/g, "%")}%`;
             filters.push(sql `(${applicants.first_name} ILIKE ${searchTerm} OR ${applicants.email} ILIKE ${searchTerm} OR ${applicants.phone} ILIKE ${searchTerm})`);
+        }
+        if (status?.trim()) {
+            filters.push(sql `${applicants.status} ILIKE ${`%${status}%`}`);
         }
         return filters;
     };
@@ -31,5 +35,18 @@ export class ApplicantHelper {
             next_page: page < totalPages ? page + 1 : null,
             prev_page: page > 1 ? page - 1 : null,
         };
+    };
+    listApplicants = (query) => {
+        const filters = [];
+        const search_string = query?.search_string || null;
+        const status = query?.status || null;
+        if (search_string?.trim()) {
+            const searchTerm = `%${search_string.trim().replace(/\s+/g, "%")}%`;
+            filters.push(sql `(${applicants.first_name} ILIKE ${searchTerm} OR ${applicants.email} ILIKE ${searchTerm} OR ${applicants.phone} ILIKE ${searchTerm})`);
+        }
+        if (status?.trim()) {
+            filters.push(sql `${applicants.status} ILIKE ${`%${status}%`}`);
+        }
+        return filters;
     };
 }

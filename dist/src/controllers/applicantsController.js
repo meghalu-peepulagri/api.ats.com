@@ -1,11 +1,12 @@
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
+import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { getRecordsCount, listApplicants } from "../service/applicantsService.js";
-import { getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
+import { getMultipleRecordsByAColumnValue, getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { validatedRequest } from "../validations/validateRequest.js";
@@ -39,11 +40,16 @@ class ApplicantsController {
         if (!applicantData || applicantData.deleted_at !== null) {
             throw new NotFoundException(APPLICANT_NOT_FOUND);
         }
+        const commentsData = await getMultipleRecordsByAColumnValue(comments, "applicant_id", +applicantId);
         const resumeUrl = applicantData.resume_key_path;
         const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
-        return sendResponse(c, 200, APPLICANT_NOT_FOUND, {
+        if (!presignedUrl) {
+            throw new NotFoundException(PRESIGNEDURL_NOT_FOUND);
+        }
+        return sendResponse(c, 200, APPLICANT_FOUND, {
             ...applicantData,
             presignedUrl,
+            comments: commentsData || [],
         });
     };
     listApplicants = async (c) => {

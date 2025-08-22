@@ -19,13 +19,14 @@ class UsersController {
         if (signupUser && signupUser?.deleted_at === null) {
             throw new ConflictException(EMAIL_EXISTED);
         }
-        const existingUserPhone = await getSingleRecordByAColumnValue(users, "phone", "=", validUserReq[0].phone);
+        const existingUserPhone = await getSingleRecordByAColumnValue(users, "phone", "=", validUserReq.phone);
         if (existingUserPhone && existingUserPhone?.deleted_at === null) {
             throw new ConflictException(PHONE_NUMBER_EXISTED);
         }
         const hashedPassword = await argon2.hash(validUserReq.password);
-        const userData = { ...validUserReq[0], password: hashedPassword };
-        const user = await saveSingleRecord(users, userData);
+        const userData = { ...validUserReq, password: hashedPassword };
+        const savedUser = await saveSingleRecord(users, userData);
+        const { password, ...user } = savedUser;
         return sendResponse(c, CREATED, USER_CREATED, user);
     };
     loginUserByEmail = async (c) => {
@@ -35,7 +36,7 @@ class UsersController {
         if (!loginUser || loginUser.deleted_at != null) {
             throw new NotFoundException(INVALID_EMAIL_ID);
         }
-        const hashedPassword = loginUser[0].password;
+        const hashedPassword = loginUser.password;
         const isPasswordMatched = await argon2.verify(hashedPassword, validUserReq.password);
         if (!isPasswordMatched) {
             throw new UnauthorizedException(INCORRECT_PASSWORD);

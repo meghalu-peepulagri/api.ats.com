@@ -7,22 +7,45 @@ export const userTypeEnum = z.enum(["HR", "ADMIN"]);
 export const VCreateUser = z.object({
   name: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().min(3, "Name must be at least 3 characters"),
+    z.string(
+      {
+        error: (issue) => {
+          if (issue.input === undefined)
+            return "Name is required";
+          return "Invalid name";
+        },
+      },
+    ).nonempty("Name is required"),
   ),
   email: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().email("Invalid email")
-      .nonempty("Email is required"),
+    z.string({
+      error: (issue) => {
+        if (issue.input === undefined)
+          return EMAIL_ID_REQUIRED;
+        return INVALID_EMAIL_ID;
+      },
+    }),
   ),
   phone: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" })
-      .nonempty("Phone number is required"),
+    z.string({
+      error: (issue) => {
+        if (issue.input === undefined)
+          return "Phone number is required";
+        return "Invalid phone number";
+      },
+    }),
   ),
   password: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().min(6, "Password must be at least 6 characters")
-      .nonempty("Password is required"),
+    z.string({
+      error: (issue) => {
+        if (issue.input === undefined)
+          return PASSWORD_REQUIRED;
+        return INVALID_PASSWORD;
+      },
+    }),
   ),
   user_type: z.enum(userTypeEnum.options, {
     error: (issue) => {
@@ -34,16 +57,13 @@ export const VCreateUser = z.object({
 });
 
 export const vUserLogin = z.object({
-  email: z.preprocess(
-    val => val === "" ? undefined : val,
-    z.string({
-      error: (issue) => {
-        if (issue.input === undefined)
-          return EMAIL_ID_REQUIRED;
-        return INVALID_EMAIL_ID;
-      },
-    }),
-  ),
+  email: z.string({
+    error: (issue) => {
+      if (issue.input === undefined)
+        return "Email is required";
+      return "Invalid email";
+    },
+  }).nonempty("Email is required"),
 
   password: z.preprocess(
     val => val === "" ? undefined : val,

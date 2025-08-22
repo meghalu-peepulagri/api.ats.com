@@ -10,6 +10,8 @@ export const vCreateApplicant = z.object({
             return "Invalid email";
         },
     }).nonempty("Email is required"),
+    education: z.string().trim().optional(),
+    salary_expectation: z.string().trim().optional(),
     role: z.string({
         error: (issue) => {
             if (issue.input === undefined)

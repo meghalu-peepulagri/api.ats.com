@@ -2,7 +2,7 @@ import type { Context } from "hono";
 
 import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
 
-import { ADD_COMMENT_VALIDATION_CRITERIA } from "../constants/appMessages.js";
+import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import NotFoundException from "../exceptions/notFoundException.js";
@@ -22,32 +22,31 @@ class CommentsController {
     const validatedCommentData = await validatedRequest<ValidateCreateSchema>("add-comment", reqBody, ADD_COMMENT_VALIDATION_CRITERIA);
     const applicantExists = await getSingleRecordByAColumnValue(applicants, "id", applicantId);
     if (!applicantExists) {
-      throw new NotFoundException("Invalid applicant ID");
+      throw new NotFoundException(INVALID_APPLICANT_ID);
     }
     const commentPayload = {
       applicant_id: applicantId,
       commented_by: userPayload.id,
       comment_description: validatedCommentData.comment_description,
     };
-
     const comment = await saveSingleRecord(comments, commentPayload);
 
-    return sendResponse(c, 201, "Comment created successfully", comment);
+    return sendResponse(c, 201, COMMENT_CREATED, comment);
   };
 
   listComments = async (c: Context) => {
-    const userPayload = c.get("user_payload");
+    const user = c.get("user_payload");
     const query = c.req.query();
     const page = +(query.page) || 1;
     const limit = +(query.limit) || 10;
     const offset = (page - 1) * limit;
     const filters = await applicantHelper.comments(query);
     const [total_records, applicantsData] = await Promise.all([
-      getRecordsCount(applicants, filters),
-      getAllComments(filters, offset, limit, userPayload.id),
+      getRecordsCount(comments, filters),
+      getAllComments(filters, offset, limit, user.id),
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
-    return sendResponse(c, 200, "Comments fetched successfully", { applicantsData, paginationData });
+    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationData, applicantsData });
   };
 };
 

@@ -7,4 +7,5 @@ import envData from "./env.js";
 const port = envData.PORT;
 
 serve({ fetch: app.fetch, port });
+// eslint-disable-next-line no-console
 console.log(`Server running on http://localhost:${port}`);
