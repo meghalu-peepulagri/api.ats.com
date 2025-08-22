@@ -169,14 +169,12 @@ async function updateMultipleRecords(table, ids, record) {
     return updatedRecords.length;
 }
 async function updateMultipleRecordsWithTrx(table, ids, record, trx) {
-    return await db.transaction(async (tx) => {
-        const updatedRecords = await tx
-            .update(table)
-            .set(record)
-            .where(inArray(table.id, ids))
-            .returning();
-        return updatedRecords.length;
-    });
+    const queryBuilder = trx || db;
+    const updatedRecords = await queryBuilder.update(table)
+        .set(record)
+        .where(inArray(table.id, ids))
+        .returning();
+    return updatedRecords.length;
 }
 async function exportData(table, projection, filters) {
     const intialQuery = db.select(projection).from(table);

@@ -4,14 +4,14 @@ import type { Applicant } from "../database/schemas/applicants.js";
 import type { Comments } from "../database/schemas/comments.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
-import { getRecordsCount, listApplicants } from "../service/applicantsService.js";
+import { applicantsStats, getRecordsCount, listApplicants } from "../service/applicantsService.js";
 import { getMultipleRecordsByAColumnValue, getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
@@ -94,6 +94,11 @@ class ApplicantsController {
     }
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
+  };
+
+  applicantStats = async (c: Context) => {
+    const stats = await applicantsStats();
+    return sendResponse(c, 200, APPLICANTS_STATS_FOUND, stats);
   };
 }
 

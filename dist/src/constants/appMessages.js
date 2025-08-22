@@ -36,6 +36,7 @@ export const STATUS_IS_REQUIRED = "Status is required";
 export const APPLICANT_UPDATED = "Applicant updated successfully";
 export const APPLICANTS_FOUND = "Applicants found successfully";
 export const APPLICANT_FOUND = "Applicant found successfully";
+export const APPLICANTS_STATS_FOUND = "Applicants stats found successfully";
 // file
 export const UPLOAD_FILE_VALIDATION_CRITERIA = "Upload file details provided do not meet the required validation criteria";
 export const UPLOAD_URL_GENERATED = "Upload url generated successfully";

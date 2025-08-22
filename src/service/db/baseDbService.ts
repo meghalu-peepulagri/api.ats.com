@@ -212,15 +212,13 @@ async function updateMultipleRecords<R extends DBTableRow>(table: DBTable, ids: 
 }
 
 async function updateMultipleRecordsWithTrx<R extends DBTableRow>(table: DBTable, ids: number[], record: Partial<R>, trx?: any) {
-  return await db.transaction(async (tx) => {
-    const updatedRecords = await tx
-      .update(table)
-      .set(record)
-      .where(inArray(table.id, ids))
-      .returning();
+  const queryBuilder = trx || db;
+  const updatedRecords = await queryBuilder.update(table)
+    .set(record)
+    .where(inArray(table.id, ids))
+    .returning();
 
-    return updatedRecords.length;
-  });
+  return updatedRecords.length;
 }
 
 async function exportData(table: DBTable, projection?: any, filters?: any) {

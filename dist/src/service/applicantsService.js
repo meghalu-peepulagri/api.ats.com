@@ -1,4 +1,4 @@
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, gt, sql } from "drizzle-orm";
 import db from "../database/configuration.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
@@ -84,4 +84,21 @@ export async function getAllComments(filters, offset, limit, userId) {
         .offset(offset)
         .limit(limit);
     return result;
+}
+// export async function applicantsStats() {
+//   const query = sql`select status, count(*) from applicants group by status`;
+//   const applicantsData = await db.execute(query);
+//   const totalApplicants = await db.select({ total: count() }).from(applicants);
+//   return {stats:applicantsData.rows, totalApplicants: totalApplicants[0].total};
+// }
+export async function applicantsStats() {
+    const query = sql `select status, count(*) from applicants group by status`;
+    const applicantsData = await db.execute(query);
+    const totalApplicants = await db.select({ total: count() }).from(applicants);
+    const recentApplicantsQuery = await db.select({ total: sql `count(${applicants.id})` }).from(applicants).where(gt(applicants.created_at, sql `now() - interval '1 day'`));
+    return {
+        stats: applicantsData.rows,
+        totalApplicants: totalApplicants[0].total,
+        recentApplicants: Number(recentApplicantsQuery[0].total),
+    };
 }
