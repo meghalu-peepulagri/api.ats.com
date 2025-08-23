@@ -1,4 +1,4 @@
-import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, GetObjectCommand, ListPartsCommand, PutObjectCommand, S3Client, S3ServiceException, UploadPartCommand } from "@aws-sdk/client-s3";
+import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, ListPartsCommand, PutObjectCommand, S3Client, S3ServiceException, UploadPartCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Config } from "../config/s3Config.js";
@@ -214,6 +214,23 @@ class S3FileService {
             },
         });
         return s3Upload;
+    }
+    ;
+    async fileExists(fileName, bucket = s3Config.bucket) {
+        try {
+            const command = new HeadObjectCommand({
+                Bucket: bucket,
+                Key: fileName,
+            });
+            return await this.s3Client.send(command);
+        }
+        catch (error) {
+            if (error instanceof S3ServiceException) {
+                const statusCode = error.$metadata.httpStatusCode;
+                throw new S3ErrorException(statusCode, error.message, error);
+            }
+            throw error;
+        }
     }
 }
 export default S3FileService;

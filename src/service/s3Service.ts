@@ -2,7 +2,7 @@ import type { CompletedPart } from "@aws-sdk/client-s3";
 import type { StatusCode } from "hono/utils/http-status";
 import type { PassThrough } from "node:stream";
 
-import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, GetObjectCommand, ListPartsCommand, PutObjectCommand, S3Client, S3ServiceException, UploadPartCommand } from "@aws-sdk/client-s3";
+import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, ListPartsCommand, PutObjectCommand, S3Client, S3ServiceException, UploadPartCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -271,6 +271,23 @@ class S3FileService {
     });
 
     return s3Upload;
+  };
+
+  async fileExists(fileName: string, bucket: string = s3Config.bucket) {
+    try {
+      const command = new HeadObjectCommand({
+        Bucket: bucket,
+        Key: fileName,
+      });
+      return await this.s3Client.send(command);
+    }
+    catch (error: any) {
+      if (error instanceof S3ServiceException) {
+        const statusCode: StatusCode = error.$metadata.httpStatusCode as StatusCode;
+        throw new S3ErrorException(statusCode, error.message, error);
+      }
+      throw error;
+    }
   }
 }
 

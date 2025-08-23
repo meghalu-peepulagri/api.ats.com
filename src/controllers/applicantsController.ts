@@ -15,6 +15,7 @@ import { applicantsStats, getRecordsCount, listApplicants } from "../service/app
 import { getMultipleRecordsByAColumnValue, getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
+import { applicantStatus } from "../validations/schema/createApplicantValidation.js";
 import { validatedRequest } from "../validations/validateRequest.js";
 
 const applicantHelper = new ApplicantHelper();
@@ -89,7 +90,8 @@ class ApplicantsController {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
     const updatedStatus = reqBody.status;
-    if (!updatedStatus) {
+
+    if (!Object.values(applicantStatus).includes(updatedStatus)) {
       throw new BadRequestException(STATUS_IS_REQUIRED);
     }
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });

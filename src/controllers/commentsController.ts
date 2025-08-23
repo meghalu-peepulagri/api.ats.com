@@ -1,14 +1,15 @@
 import type { Context } from "hono";
 
+import type { Comments } from "../database/schemas/comments.js";
 import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
 
-import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
+import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { getAllComments, getRecordsCount } from "../service/applicantsService.js";
-import { getSingleRecordByAColumnValue, saveSingleRecord } from "../service/db/baseDbService.js";
+import { getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { validatedRequest } from "../validations/validateRequest.js";
 
@@ -34,6 +35,7 @@ class CommentsController {
     return sendResponse(c, 201, COMMENT_CREATED, comment);
   };
 
+  // May be not required
   listComments = async (c: Context) => {
     const user = c.get("user_payload");
     const query = c.req.query();
@@ -47,6 +49,23 @@ class CommentsController {
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
     return sendResponse(c, 200, COMMENTS_FETCHED, { paginationData, applicantsData });
+  };
+
+  updateCommentByApplicantById = async (c: Context) => {
+    const commentId = +c.req.param("id");
+    const userPayload = c.get("user_payload");
+    const reqBody = await c.req.json();
+    const validatedCommentData = await validatedRequest<ValidateCreateSchema>("add-comment", reqBody, ADD_COMMENT_VALIDATION_CRITERIA);
+    const applicantExists = await getSingleRecordByAColumnValue(comments, "id", commentId);
+    if (!applicantExists) {
+      throw new NotFoundException(INVALID_APPLICANT_ID);
+    }
+
+    const comment = await updateRecordById<Comments>(comments, +commentId, {
+      comment_description: validatedCommentData.comment_description,
+      commented_by: userPayload.id,
+    });
+    return sendResponse(c, 201, COMMENT_UPDATED, comment);
   };
 };
 

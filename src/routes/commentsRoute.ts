@@ -5,7 +5,8 @@ import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
 const commentsRoute = new Hono();
 const commentsController = new CommentsController();
-
+// applicantId
 commentsRoute.post("/:id", isAuthenticated, commentsController.addCommentToApplicant.bind(commentsController));
 commentsRoute.get("/:id", isAuthenticated, commentsController.listComments.bind(commentsController));
+commentsRoute.patch("/:id", isAuthenticated, commentsController.updateCommentByApplicantById.bind(commentsController));
 export default commentsRoute;

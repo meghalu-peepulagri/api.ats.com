@@ -27,6 +27,7 @@ export const ADD_COMMENT_VALIDATION_CRITERIA = "Comment details provided do not 
 export const INVALID_APPLICANT_ID = "Invalid applicant id";
 export const COMMENT_CREATED = "Comment added successfully";
 export const COMMENTS_FETCHED = "Comments fetched successfully";
+export const COMMENT_UPDATED = "Comment updated successfully";
 
 // Applicant
 export const ADD_APPLICANT_VALIDATION_CRITERIA = "Add applicant details provided do not meet the required validation criteria";
@@ -40,7 +41,7 @@ export const APPLICANT_ID_REQUIRED = "Applicant id is required";
 export const APPLICANT_NOT_FOUND = "Applicant not found";
 export const APPLICANTS_NOT_FOUND = "Applicants not found";
 export const STATUS_IS_REQUIRED = "Status is required";
-export const APPLICANT_UPDATED = "Applicant updated successfully";
+export const APPLICANT_UPDATED = "Applicant status updated successfully";
 export const APPLICANTS_FOUND = "Applicants found successfully";
 export const APPLICANT_FOUND = "Applicant found successfully";
 export const APPLICANTS_STATS_FOUND = "Applicants stats found successfully";

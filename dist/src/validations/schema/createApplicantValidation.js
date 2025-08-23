@@ -1,7 +1,30 @@
 import { z } from "zod";
+export var applicantStatus;
+(function (applicantStatus) {
+    applicantStatus["APPLIED"] = "Applied";
+    applicantStatus["SCREENING"] = "Screening";
+    applicantStatus["PENDING"] = "Pending";
+    applicantStatus["INTERVIEW_SCREENING"] = "Interview_screening";
+    applicantStatus["SHORTLISTED"] = "Shortlisted";
+    applicantStatus["HIRED"] = "Hired";
+    applicantStatus["JOINED"] = "joined";
+    applicantStatus["REJECTED"] = "Rejected";
+})(applicantStatus || (applicantStatus = {}));
 export const vCreateApplicant = z.object({
-    first_name: z.preprocess(val => val === "" ? undefined : val, z.string().trim().min(3, "First name must be at least 3 characters").optional()),
-    last_name: z.string().trim().optional(),
+    first_name: z.string({
+        error: (issue) => {
+            if (issue.input === "" || issue.input === undefined)
+                return "First name is required";
+            return "Invalid first name";
+        },
+    }),
+    last_name: z.string({
+        error: (issue) => {
+            if (issue.input === "" || issue.input === undefined)
+                return "Last name is required";
+            return "Invalid last name";
+        },
+    }),
     phone: z.preprocess(val => val === "" ? undefined : val, z.string().trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }).optional()),
     email: z.string({
         error: (issue) => {

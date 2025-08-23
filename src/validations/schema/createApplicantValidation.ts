@@ -1,11 +1,31 @@
 import { z } from "zod";
 
+export enum applicantStatus {
+  APPLIED = "Applied",
+  SCREENING = "Screening",
+  PENDING = "Pending",
+  INTERVIEW_SCREENING = "Interview_screening",
+  SHORTLISTED = "Shortlisted",
+  HIRED = "Hired",
+  JOINED = "joined",
+  REJECTED = "Rejected",
+}
+
 export const vCreateApplicant = z.object({
-  first_name: z.preprocess(
-    val => val === "" ? undefined : val,
-    z.string().trim().min(3, "First name must be at least 3 characters").optional(),
-  ),
-  last_name: z.string().trim().optional(),
+  first_name: z.string({
+    error: (issue) => {
+      if (issue.input === "" || issue.input === undefined)
+        return "First name is required";
+      return "Invalid first name";
+    },
+  }),
+  last_name: z.string({
+    error: (issue) => {
+      if (issue.input === "" || issue.input === undefined)
+        return "Last name is required";
+      return "Invalid last name";
+    },
+  }),
   phone: z.preprocess(
     val => val === "" ? undefined : val,
     z.string().trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }).optional(),
