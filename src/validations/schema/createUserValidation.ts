@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { EMAIL_ID_REQUIRED, INVALID_EMAIL_ID, INVALID_PASSWORD, PASSWORD_REQUIRED } from "../../constants/appMessages.js";
+import { EMAIL_REQUIRED, INVALID_EMAIL, INVALID_PASSWORD, PASSWORD_REQUIRED } from "../../constants/appMessages.js";
 
 export const userTypeEnum = z.enum(["HR", "ADMIN"]);
 
@@ -22,8 +22,8 @@ export const VCreateUser = z.object({
     z.string({
       error: (issue) => {
         if (issue.input === undefined)
-          return EMAIL_ID_REQUIRED;
-        return INVALID_EMAIL_ID;
+          return EMAIL_REQUIRED;
+        return INVALID_EMAIL;
       },
     }),
   ),
@@ -49,7 +49,7 @@ export const VCreateUser = z.object({
   ),
   user_type: z.enum(userTypeEnum.options, {
     error: (issue) => {
-      if (issue.input === undefined)
+      if (issue.input === undefined || issue.input === "")
         return "User type is required";
       return "Invalid user type";
     },

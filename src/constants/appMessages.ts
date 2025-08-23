@@ -20,6 +20,8 @@ export const INVALID_EMAIL_ID = "Invalid email id";
 export const PASSWORD_REQUIRED = "Password is required";
 export const INVALID_PASSWORD = "Invalid password";
 export const INCORRECT_PASSWORD = "Incorrect password";
+export const EMAIL_REQUIRED = "Email is required";
+export const INVALID_EMAIL = "Invalid email";
 
 // comment
 
