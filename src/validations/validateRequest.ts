@@ -5,7 +5,7 @@ import type { AppActivity, ValidatedRequest } from "../types/appTypes.js";
 import UnprocessableEntityException from "../exceptions/unProcessableEntityException.js";
 import { getValidationErrors } from "../utils/onError.js";
 import { vAddComment } from "./schema/addCommentSchema.js";
-import { vCreateApplicant } from "./schema/applicants.js";
+import { vCreateApplicant } from "./schema/createApplicantValidation.js";
 import { VCreateUser, vUserLogin } from "./schema/createUserValidation.js";
 
 const schemaMap: Record<AppActivity, ZodSchema | undefined> = {

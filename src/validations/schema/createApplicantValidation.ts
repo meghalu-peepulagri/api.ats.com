@@ -14,22 +14,29 @@ export enum applicantStatus {
 export const vCreateApplicant = z.object({
   first_name: z.string({
     error: (issue) => {
-      if (issue.input === "" || issue.input === undefined)
-        return "First name is required";
-      return "Invalid first name";
-    },
-  }),
-  last_name: z.string({
-    error: (issue) => {
-      if (issue.input === "" || issue.input === undefined)
+      if (issue.input === undefined)
         return "Last name is required";
       return "Invalid last name";
     },
-  }),
+  }).nonempty("First name is required"),
+  last_name: z.string({
+    error: (issue) => {
+      if (issue.input === undefined)
+        return "Last name is required";
+      return "Invalid last name";
+    },
+  }).nonempty("Last name is required"),
   phone: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }).optional(),
+    z.string({
+      error: (issue) => {
+        if (issue.input === undefined)
+          return "Phone number is required";
+        return "Invalid phone number";
+      },
+    }).regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }),
   ),
+
   email: z.string({
     error: (issue) => {
       if (issue.input === undefined)
@@ -37,8 +44,11 @@ export const vCreateApplicant = z.object({
       return "Invalid email";
     },
   }).nonempty("Email is required"),
+
   education: z.string().trim().optional(),
+
   salary_expectation: z.string().trim().optional(),
+
   role: z.string({
     error: (issue) => {
       if (issue.input === undefined)

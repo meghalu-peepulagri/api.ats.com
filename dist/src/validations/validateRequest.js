@@ -1,7 +1,7 @@
 import UnprocessableEntityException from "../exceptions/unProcessableEntityException.js";
 import { getValidationErrors } from "../utils/onError.js";
 import { vAddComment } from "./schema/addCommentSchema.js";
-import { vCreateApplicant } from "./schema/applicants.js";
+import { vCreateApplicant } from "./schema/createApplicantValidation.js";
 import { VCreateUser, vUserLogin } from "./schema/createUserValidation.js";
 const schemaMap = {
     "add-applicant": vCreateApplicant,
