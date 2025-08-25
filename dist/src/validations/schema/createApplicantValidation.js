@@ -1,14 +1,14 @@
 import { z } from "zod";
 export var applicantStatus;
 (function (applicantStatus) {
-    applicantStatus["APPLIED"] = "Applied";
-    applicantStatus["SCREENING"] = "Screening";
-    applicantStatus["PENDING"] = "Pending";
-    applicantStatus["INTERVIEW_SCREENING"] = "Interview_screening";
-    applicantStatus["SHORTLISTED"] = "Shortlisted";
-    applicantStatus["HIRED"] = "Hired";
-    applicantStatus["JOINED"] = "joined";
-    applicantStatus["REJECTED"] = "Rejected";
+    applicantStatus["APPLIED"] = "APPLIED";
+    applicantStatus["SCREENING"] = "SCREENING";
+    applicantStatus["PENDING"] = "PENDING";
+    applicantStatus["INTERVIEW_SCREENING"] = "INTERVIEW_SCREENING";
+    applicantStatus["SHORTLISTED"] = "SHORTLISTED";
+    applicantStatus["HIRED"] = "HIRED";
+    applicantStatus["JOINED"] = "JOINED";
+    applicantStatus["REJECTED"] = "REJECTED";
 })(applicantStatus || (applicantStatus = {}));
 export const vCreateApplicant = z.object({
     first_name: z.string({
@@ -48,5 +48,11 @@ export const vCreateApplicant = z.object({
             return "Invalid role";
         },
     }).nullish(),
-    resume_key_path: z.preprocess(val => val === "" ? undefined : val, z.string().trim().optional()),
+    resume_key_path: z.preprocess(val => val === "" ? undefined : val, z.string({
+        error: (issue) => {
+            if (issue.input === undefined)
+                return "Resume key is required";
+            return "Invalid resume key";
+        },
+    })),
 });

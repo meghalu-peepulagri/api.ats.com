@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export enum applicantStatus {
-  APPLIED = "Applied",
-  SCREENING = "Screening",
-  PENDING = "Pending",
-  INTERVIEW_SCREENING = "Interview_screening",
-  SHORTLISTED = "Shortlisted",
-  HIRED = "Hired",
-  JOINED = "joined",
-  REJECTED = "Rejected",
+  APPLIED = "APPLIED",
+  SCREENING = "SCREENING",
+  PENDING = "PENDING",
+  INTERVIEW_SCREENING = "INTERVIEW_SCREENING",
+  SHORTLISTED = "SHORTLISTED",
+  HIRED = "HIRED",
+  JOINED = "JOINED",
+  REJECTED = "REJECTED",
 }
 
 export const vCreateApplicant = z.object({
@@ -58,7 +58,13 @@ export const vCreateApplicant = z.object({
   }).nullish(),
   resume_key_path: z.preprocess(
     val => val === "" ? undefined : val,
-    z.string().trim().optional(),
+    z.string({
+      error: (issue) => {
+        if (issue.input === undefined)
+          return "Resume key is required";
+        return "Invalid resume key";
+      },
+    }),
   ),
 });
 

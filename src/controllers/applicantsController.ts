@@ -91,10 +91,10 @@ class ApplicantsController {
     }
     const updatedStatus = reqBody.status;
 
-    if (!Object.values(applicantStatus).includes(updatedStatus)) {
+    if (!Object.values(applicantStatus).includes(updatedStatus.toUpperCase())) {
       throw new BadRequestException(STATUS_IS_REQUIRED);
     }
-    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });
+    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus.toUpperCase() });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
 
