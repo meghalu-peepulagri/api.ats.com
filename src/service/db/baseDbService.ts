@@ -165,7 +165,7 @@ async function saveRecords<R extends DBTableRow>(table: DBTable, records: DBNewR
 }
 
 async function updateRecordById<R extends DBTableRow>(table: DBTable, id: number, record: UpdateRecordData<R>) {
-  const dataWithTimeStamps = { ...record };
+  const dataWithTimeStamps = { ...record, updated_at: new Date() };
 
   const recordUpdated = await db
     .update(table)

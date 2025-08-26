@@ -60,12 +60,11 @@ class CommentsController {
     if (!applicantExists) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
-
     const comment = await updateRecordById<Comments>(comments, +commentId, {
       comment_description: validatedCommentData.comment_description,
       commented_by: userPayload.id,
     });
-    return sendResponse(c, 201, COMMENT_UPDATED, comment);
+    return sendResponse(c, 200, COMMENT_UPDATED, comment);
   };
 };
 

@@ -54,7 +54,7 @@ class CommentsController {
             comment_description: validatedCommentData.comment_description,
             commented_by: userPayload.id,
         });
-        return sendResponse(c, 201, COMMENT_UPDATED, comment);
+        return sendResponse(c, 200, COMMENT_UPDATED, comment);
     };
 }
 ;

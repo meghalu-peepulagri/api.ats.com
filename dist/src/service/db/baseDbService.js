@@ -132,7 +132,7 @@ async function saveRecords(table, records, trx) {
     return recordsSaved;
 }
 async function updateRecordById(table, id, record) {
-    const dataWithTimeStamps = { ...record };
+    const dataWithTimeStamps = { ...record, updated_at: new Date() };
     const recordUpdated = await db
         .update(table)
         .set(dataWithTimeStamps)
