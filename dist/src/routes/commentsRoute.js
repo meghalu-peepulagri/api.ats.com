@@ -7,4 +7,5 @@ const commentsController = new CommentsController();
 commentsRoute.post("/:id", isAuthenticated, commentsController.addCommentToApplicant.bind(commentsController));
 commentsRoute.get("/:id", isAuthenticated, commentsController.listComments.bind(commentsController));
 commentsRoute.patch("/:id", isAuthenticated, commentsController.updateCommentByApplicantById.bind(commentsController));
+commentsRoute.delete("/:applicant_id/comment/:id", isAuthenticated, commentsController.deleteCommentById.bind(commentsController));
 export default commentsRoute;

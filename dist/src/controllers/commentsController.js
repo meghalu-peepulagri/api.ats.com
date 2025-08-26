@@ -1,10 +1,11 @@
-import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
+import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENT_DELETED, COMMENT_ID_REQUIRED, COMMENT_NOT_FOUND, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
+import BadRequestException from "../exceptions/badRequestException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { getAllComments, getRecordsCount } from "../service/applicantsService.js";
-import { getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
+import { deleteRecordById, getSingleRecordByAColumnValue, getSingleRecordByMultipleColumnValues, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { validatedRequest } from "../validations/validateRequest.js";
 const applicantHelper = new ApplicantHelper();
@@ -56,6 +57,22 @@ class CommentsController {
         });
         return sendResponse(c, 200, COMMENT_UPDATED, comment);
     };
+    deleteCommentById = async (c) => {
+        const applicantId = +c.req.param("applicant_id");
+        const commentId = +c.req.param("id");
+        const userPayload = c.get("user_payload");
+        if (!commentId || !applicantId) {
+            throw new BadRequestException(COMMENT_ID_REQUIRED);
+        }
+        const commentExists = await getSingleRecordByMultipleColumnValues(comments, ["id", "applicant_id"], [commentId, applicantId], ["=", "="]);
+        if (!commentExists || commentExists.applicant_id !== applicantId || (userPayload.user_type !== "ADMIN" && commentExists.commented_by !== userPayload.id)) {
+            throw new NotFoundException(INVALID_APPLICANT_ID);
+        }
+        const comment = await deleteRecordById(comments, commentId);
+        if (!comment) {
+            throw new NotFoundException(COMMENT_NOT_FOUND);
+        }
+        return sendResponse(c, 200, COMMENT_DELETED);
+    };
 }
-;
 export default CommentsController;

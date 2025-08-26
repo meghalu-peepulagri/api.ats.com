@@ -26,6 +26,9 @@ export const INVALID_APPLICANT_ID = "Invalid applicant id";
 export const COMMENT_CREATED = "Comment added successfully";
 export const COMMENTS_FETCHED = "Comments fetched successfully";
 export const COMMENT_UPDATED = "Comment updated successfully";
+export const COMMENT_DELETED = "Comment deleted successfully";
+export const COMMENT_NOT_FOUND = "Comment not found";
+export const COMMENT_ID_REQUIRED = "Comment id is required";
 // Applicant
 export const ADD_APPLICANT_VALIDATION_CRITERIA = "Add applicant details provided do not meet the required validation criteria";
 export const EMAIL_EXISTED = "Email already exists";
@@ -40,6 +43,7 @@ export const APPLICANT_UPDATED = "Applicant status updated successfully";
 export const APPLICANTS_FOUND = "Applicants found successfully";
 export const APPLICANT_FOUND = "Applicant found successfully";
 export const APPLICANTS_STATS_FOUND = "Applicants stats found successfully";
+export const APPLICANT_DELETED = "Applicant deleted successfully";
 // file
 export const UPLOAD_FILE_VALIDATION_CRITERIA = "Upload file details provided do not meet the required validation criteria";
 export const UPLOAD_URL_GENERATED = "Upload url generated successfully";

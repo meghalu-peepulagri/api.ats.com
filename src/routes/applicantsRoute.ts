@@ -10,6 +10,7 @@ applicantsRoute.post("/", isAuthenticated, applicantsController.addApplicant.bin
 applicantsRoute.get("/:id", isAuthenticated, applicantsController.getApplicantById.bind(applicantsController));
 applicantsRoute.get("/", isAuthenticated, applicantsController.listApplicants.bind(applicantsController));
 applicantsRoute.patch("/:id", isAuthenticated, applicantsController.updateStatusApplicant.bind(applicantsController));
+applicantsRoute.delete("/:id", isAuthenticated, applicantsController.deleteApplicantById.bind(applicantsController));
 applicantsRoute.get("/dashboard/stats", isAuthenticated, applicantsController.applicantStats.bind(applicantsController));
 
 export default applicantsRoute;
