@@ -1,4 +1,4 @@
-import { ADD_COMMENT_VALIDATION_CRITERIA, COMMENT_CREATED, COMMENT_DELETED, COMMENT_ID_REQUIRED, COMMENT_NOT_FOUND, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
+import { ADD_COMMENT_VALIDATION_CRITERIA, APPLICANT_ID_REQUIRED, COMMENT_CREATED, COMMENT_DELETED, COMMENT_ID_REQUIRED, COMMENT_NOT_FOUND, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
@@ -11,12 +11,15 @@ import { validatedRequest } from "../validations/validateRequest.js";
 const applicantHelper = new ApplicantHelper();
 class CommentsController {
     addCommentToApplicant = async (c) => {
-        const applicantId = +c.req.param("id");
         const reqBody = await c.req.json();
         const userPayload = c.get("user_payload");
+        const applicantId = +c.req.param("id");
+        if (!applicantId) {
+            throw new BadRequestException(APPLICANT_ID_REQUIRED);
+        }
         const validatedCommentData = await validatedRequest("add-comment", reqBody, ADD_COMMENT_VALIDATION_CRITERIA);
         const applicantExists = await getSingleRecordByAColumnValue(applicants, "id", applicantId);
-        if (!applicantExists) {
+        if (!applicantExists || applicantExists.deleted_at !== null) {
             throw new NotFoundException(INVALID_APPLICANT_ID);
         }
         const commentPayload = {
