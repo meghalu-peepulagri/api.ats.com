@@ -5,7 +5,7 @@ import type { Comments } from "../database/schemas/comments.js";
 import type { User } from "../database/schemas/users.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
@@ -83,6 +83,9 @@ class ApplicantsController {
   updateStatusApplicant = async (c: Context) => {
     const applicantId = c.req.param("id");
     const reqBody = await c.req.json();
+    if (!reqBody.status || reqBody.status.trim() === "") {
+      throw new BadRequestException(STATUS_IS_REQUIRED);
+    }
     if (!applicantId) {
       throw new BadRequestException(APPLICANT_ID_REQUIRED);
     }
@@ -90,10 +93,10 @@ class ApplicantsController {
     if (!applicant || applicant.deleted_at !== null) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
-    const updatedStatus = reqBody.status;
+    const updatedStatus = reqBody.status.trim();
 
     if (!Object.values(applicantStatus).includes(updatedStatus.toUpperCase())) {
-      throw new BadRequestException(STATUS_IS_REQUIRED);
+      throw new BadRequestException(INVALID_STATUS);
     }
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus.toUpperCase() });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
