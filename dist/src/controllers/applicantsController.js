@@ -100,8 +100,8 @@ class ApplicantsController {
             throw new BadRequestException(APPLICANT_ID_REQUIRED);
         }
         const applicant = await getRecordById(applicants, +applicantId);
-        if (!applicant || user.user_type !== "ADMIN") {
-            throw new NotFoundException(APPLICANT_NOT_FOUND);
+        if (!applicant || applicant.deleted_at !== null || (user.user_type !== "ADMIN" && user.user_type !== "HR")) {
+            throw new NotFoundException(INVALID_APPLICANT_ID);
         }
         if (applicant.status !== "REJECTED") {
             throw new ConflictException(APPLICANT_CANNOT_BE_DELETED);
@@ -113,4 +113,5 @@ class ApplicantsController {
         return sendResponse(c, 200, APPLICANT_DELETED);
     };
 }
+;
 export default ApplicantsController;
