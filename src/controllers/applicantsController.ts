@@ -5,7 +5,7 @@ import type { Comments } from "../database/schemas/comments.js";
 import type { User } from "../database/schemas/users.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CANNOT_BE_DELETED, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
@@ -117,9 +117,9 @@ class ApplicantsController {
     if (!applicant || applicant.deleted_at !== null || (user.user_type !== "ADMIN" && user.user_type !== "HR")) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
-    if (applicant.status !== "REJECTED") {
-      throw new ConflictException(APPLICANT_CANNOT_BE_DELETED);
-    }
+    // if (applicant.status !== "REJECTED") {
+    //   throw new ConflictException(APPLICANT_CANNOT_BE_DELETED);
+    // }
     const deletedApplicant = await softDeleteRecordById<Applicant>(applicants, applicantId, { deleted_at: new Date() });
     if (!deletedApplicant) {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
