@@ -45,6 +45,7 @@ export const APPLICANT_FOUND = "Applicant found successfully";
 export const APPLICANTS_STATS_FOUND = "Applicants stats found successfully";
 export const APPLICANT_DELETED = "Applicant deleted successfully";
 export const INVALID_STATUS = "Invalid status";
+export const APPLICANT_CANNOT_BE_DELETED = "Applicant cannot be deleted";
 // file
 export const UPLOAD_FILE_VALIDATION_CRITERIA = "Upload file details provided do not meet the required validation criteria";
 export const UPLOAD_URL_GENERATED = "Upload url generated successfully";

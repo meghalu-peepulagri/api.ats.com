@@ -24,6 +24,7 @@ export class ApplicantHelper {
     if (role?.trim()) {
       filters.push(sql`${applicants.role} ILIKE ${`%${role}%`}`);
     }
+    filters.push(sql`${applicants.deleted_at} IS NULL`);
     return filters;
   };
 

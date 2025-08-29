@@ -45,6 +45,7 @@ export const vCreateApplicant = z.object({
     },
   }).nonempty("Email is required"),
 
+  status: z.string().default("PENDING").optional(),
   education: z.string().trim().optional(),
 
   salary_expectation: z.string().trim().optional(),
