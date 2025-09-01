@@ -1,12 +1,11 @@
 import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
-import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { applicantsStats, getRecordsCount, listApplicants } from "../service/applicantsService.js";
-import { getMultipleRecordsByAColumnValue, getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
+import { getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { applicantStatus } from "../validations/schema/createApplicantValidation.js";
@@ -41,7 +40,6 @@ class ApplicantsController {
         if (!applicantData || applicantData.deleted_at !== null) {
             throw new NotFoundException(INVALID_APPLICANT_ID);
         }
-        const commentsData = await getMultipleRecordsByAColumnValue(comments, "applicant_id", +applicantId);
         const resumeUrl = applicantData.resume_key_path;
         const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
         if (!presignedUrl) {
@@ -50,7 +48,6 @@ class ApplicantsController {
         return sendResponse(c, 200, APPLICANT_FOUND, {
             ...applicantData,
             presignedUrl,
-            comments: commentsData || [],
         });
     };
     listApplicants = async (c) => {

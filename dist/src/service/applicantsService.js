@@ -72,17 +72,27 @@ export async function getRecordsCount(table, filters) {
     const result = await finalQuery;
     return result[0].total;
 }
-export async function getAllComments(filters, offset, limit, userId) {
-    const result = await db.select({
-        id: comments.id,
-        comment_description: comments.comment_description,
-        commented_by: comments.commented_by,
-        commented_at: comments.commented_at,
-    })
-        .from(comments)
-        .where(and(...filters, eq(comments.commented_by, userId)))
-        .offset(offset)
-        .limit(limit);
+export async function getAllComments(filters, offset, limit, applicantId) {
+    const result = await db.query.comments.findMany({
+        where: and(...filters, eq(comments.applicant_id, applicantId)),
+        offset,
+        limit,
+        orderBy: [desc(comments.commented_at)],
+        columns: {
+            id: true,
+            comment_description: true,
+            commented_by: true,
+            commented_at: true,
+        },
+        with: {
+            user: {
+                columns: {
+                    id: true,
+                    name: true,
+                },
+            },
+        },
+    });
     return result;
 }
 // export async function applicantsStats() {

@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import { applicants } from "./applicants.js";
 import { users } from "./users.js";
@@ -14,3 +15,9 @@ export const comments = pgTable("comments", {
     index("comments_applicant_id_idx").on(t.applicant_id),
     index("comments_commented_by_idx").on(t.commented_by),
 ]);
+export const commentsRelations = relations(comments, ({ one }) => ({
+    user: one(users, {
+        fields: [comments.commented_by],
+        references: [users.id],
+    }),
+}));

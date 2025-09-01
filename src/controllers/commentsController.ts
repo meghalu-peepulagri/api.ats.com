@@ -41,17 +41,20 @@ class CommentsController {
     return sendResponse(c, 201, COMMENT_CREATED, comment);
   };
 
-  // May be not required
-  listComments = async (c: Context) => {
-    const user = c.get("user_payload");
+  listCommentsByApplicantId = async (c: Context) => {
+    const applicantId = +c.req.param("applicant_id");
     const query = c.req.query();
     const page = +(query.page) || 1;
     const limit = +(query.limit) || 10;
     const offset = (page - 1) * limit;
-    const filters = await applicantHelper.comments(query);
+    const filters = await applicantHelper.comments(query, applicantId);
+    const applicantExists = await getSingleRecordByAColumnValue<Comments>(comments, "applicant_id", applicantId);
+    if (!applicantExists || applicantExists.deleted_at !== null) {
+      throw new NotFoundException(INVALID_APPLICANT_ID);
+    }
     const [total_records, applicantsData] = await Promise.all([
       getRecordsCount(comments, filters),
-      getAllComments(filters, offset, limit, user.id),
+      getAllComments(filters, offset, limit, applicantExists.applicant_id),
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
     return sendResponse(c, 200, COMMENTS_FETCHED, { paginationData, applicantsData });
