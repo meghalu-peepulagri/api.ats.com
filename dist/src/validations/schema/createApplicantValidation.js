@@ -2,13 +2,10 @@ import { z } from "zod";
 export var applicantStatus;
 (function (applicantStatus) {
     applicantStatus["APPLIED"] = "APPLIED";
-    applicantStatus["SCREENING"] = "SCREENING";
-    applicantStatus["PENDING"] = "PENDING";
-    applicantStatus["INTERVIEW_SCREENING"] = "INTERVIEW_SCREENING";
-    applicantStatus["SHORTLISTED"] = "SHORTLISTED";
+    applicantStatus["SCREENED"] = "SCREENED";
     applicantStatus["HIRED"] = "HIRED";
-    applicantStatus["JOINED"] = "JOINED";
     applicantStatus["REJECTED"] = "REJECTED";
+    applicantStatus["JOINED"] = "JOINED";
 })(applicantStatus || (applicantStatus = {}));
 export const vCreateApplicant = z.object({
     first_name: z.string({
@@ -39,7 +36,7 @@ export const vCreateApplicant = z.object({
             return "Invalid email";
         },
     }).nonempty("Email is required"),
-    status: z.string().default("PENDING").optional(),
+    status: z.string().default("APPLIED").optional(),
     education: z.string().trim().optional(),
     salary_expectation: z.string().trim().optional(),
     role: z.string({

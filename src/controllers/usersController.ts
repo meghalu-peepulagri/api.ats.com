@@ -7,11 +7,10 @@ import type { User } from "../database/schemas/users.js";
 import type { VCreateUserSchema, VUserLoginSchema } from "../validations/schema/createUserValidation.js";
 
 import { appConfig } from "../config/appConfig.js";
-import { ADD_USER_VALIDATION_CRITERIA, EMAIL_EXISTED, INCORRECT_PASSWORD, INVALID_EMAIL_ID, LOGIN_VALIDATION_CRETERIA, PHONE_NUMBER_EXISTED, USER_CREATED } from "../constants/appMessages.js";
+import { ADD_USER_VALIDATION_CRITERIA, EMAIL_EXISTED, INVALID_CREDENTIALS, LOGIN_VALIDATION_CRETERIA, PHONE_NUMBER_EXISTED, USER_CREATED } from "../constants/appMessages.js";
 import { CREATED } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import ConflictException from "../exceptions/conflictException.js";
-import NotFoundException from "../exceptions/notFoundException.js";
 import UnauthorizedException from "../exceptions/unAuthorizedException.js";
 import { getSingleRecordByAColumnValue, saveSingleRecord } from "../service/db/baseDbService.js";
 import { genJWTTokensForUser } from "../utils/jwtUtils.js";
@@ -41,13 +40,13 @@ class UsersController {
     const reqBody = await c.req.json();
     const validUserReq = await validatedRequest<VUserLoginSchema>("login", reqBody, LOGIN_VALIDATION_CRETERIA);
     const loginUser = await getSingleRecordByAColumnValue<User>(users, "email", validUserReq.email, "=");
-    if (!loginUser || loginUser.deleted_at != null) {
-      throw new NotFoundException(INVALID_EMAIL_ID);
+    if (!loginUser || !loginUser?.password) {
+      throw new UnauthorizedException(INVALID_CREDENTIALS);
     }
     const hashedPassword = loginUser.password;
     const isPasswordMatched = await argon2.verify(hashedPassword, validUserReq.password);
     if (!isPasswordMatched) {
-      throw new UnauthorizedException(INCORRECT_PASSWORD);
+      throw new UnauthorizedException(INVALID_CREDENTIALS);
     }
     const { password, ...user } = loginUser;
     const tokensData = await genJWTTokensForUser(loginUser.id);

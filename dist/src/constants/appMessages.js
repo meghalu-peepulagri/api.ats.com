@@ -8,6 +8,7 @@ export const REFRESH_TOKEN_REQUIRED = "refresh token required";
 export const INVALID_REFRESH_TOKEN = "Invalid refresh token";
 export const USER_INACTIVE = "User is inactive";
 // User
+export const INVALID_CREDENTIALS = "Invalid credentials";
 export const ADD_USER_VALIDATION_CRITERIA = "User details provided do not meet the required validation criteria";
 export const LOGIN_VALIDATION_CRETERIA = "Login details provided do not meet the required validation criteria";
 export const EMAIL_EXIST = "Email already exist";

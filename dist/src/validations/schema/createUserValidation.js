@@ -43,7 +43,7 @@ export const vUserLogin = z.object({
         error: (issue) => {
             if (issue.input === undefined)
                 return "Email is required";
-            return "Invalid email";
+            return "Invalid credentials";
         },
     }).nonempty("Email is required"),
     password: z.preprocess(val => val === "" ? undefined : val, z.string({

@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gt, sql } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 
 import type { NewApplicant } from "../database/schemas/applicants.js";
 
@@ -108,13 +108,27 @@ export async function getAllComments(filters: any, offset: number, limit: number
 //   return {stats:applicantsData.rows, totalApplicants: totalApplicants[0].total};
 // }
 export async function applicantsStats() {
-  const query = sql`select status, count(*) from applicants group by status`;
+  const query = sql` SELECT status, COUNT(*) AS count,
+      (SELECT COUNT(*) FROM ${applicants}) AS total
+    FROM ${applicants}
+    GROUP BY status
+  `;
+
   const applicantsData = await db.execute(query);
-  const totalApplicants = await db.select({ total: count() }).from(applicants);
-  const recentApplicantsQuery = await db.select({ total: sql<number>`count(${applicants.id})` }).from(applicants).where(gt(applicants.created_at, sql`now() - interval '1 day'`));
+
+  const stats: Record<string, number> = {};
+  let totalApplicants = 0;
+
+  applicantsData.rows.forEach((row: any) => {
+    stats[row.status] = Number(row.count);
+    totalApplicants = Number(row.total);
+  });
+
   return {
-    stats: applicantsData.rows,
-    totalApplicants: totalApplicants[0].total,
-    recentApplicants: Number(recentApplicantsQuery[0].total),
+    totalApplicants,
+    totalScreened: stats.SCREENED || 0,
+    totalHired: stats.HIRED || 0,
+    totalRejected: stats.REJECTED || 0,
+    totalJoined: stats.JOINED || 0,
   };
 }

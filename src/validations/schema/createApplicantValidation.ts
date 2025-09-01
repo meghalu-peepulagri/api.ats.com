@@ -2,13 +2,10 @@ import { z } from "zod";
 
 export enum applicantStatus {
   APPLIED = "APPLIED",
-  SCREENING = "SCREENING",
-  PENDING = "PENDING",
-  INTERVIEW_SCREENING = "INTERVIEW_SCREENING",
-  SHORTLISTED = "SHORTLISTED",
+  SCREENED = "SCREENED",
   HIRED = "HIRED",
-  JOINED = "JOINED",
   REJECTED = "REJECTED",
+  JOINED = "JOINED",
 }
 
 export const vCreateApplicant = z.object({
@@ -45,7 +42,7 @@ export const vCreateApplicant = z.object({
     },
   }).nonempty("Email is required"),
 
-  status: z.string().default("PENDING").optional(),
+  status: z.string().default("APPLIED").optional(),
   education: z.string().trim().optional(),
 
   salary_expectation: z.string().trim().optional(),
