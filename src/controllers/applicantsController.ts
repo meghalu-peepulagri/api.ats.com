@@ -71,8 +71,8 @@ class ApplicantsController {
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
     return sendResponse(c, 200, APPLICANTS_FOUND, {
-      pagination: paginationData,
-      applicants: applicantsData,
+      paginationInfo: paginationData,
+      records: applicantsData,
     });
   };
 

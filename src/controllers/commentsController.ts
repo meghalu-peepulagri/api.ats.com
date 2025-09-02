@@ -5,7 +5,7 @@ import type { Comments } from "../database/schemas/comments.js";
 import type { User } from "../database/schemas/users.js";
 import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
 
-import { ADD_COMMENT_VALIDATION_CRITERIA, APPLICANT_ID_REQUIRED, COMMENT_CREATED, COMMENT_DELETED, COMMENT_ID_REQUIRED, COMMENT_NOT_FOUND, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
+import { ADD_COMMENT_VALIDATION_CRITERIA, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, COMMENT_CREATED, COMMENT_DELETED, COMMENT_ID_REQUIRED, COMMENT_NOT_FOUND, COMMENT_UPDATED, COMMENTS_FETCHED, INVALID_APPLICANT_ID } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
 import BadRequestException from "../exceptions/badRequestException.js";
@@ -48,16 +48,16 @@ class CommentsController {
     const limit = +(query.limit) || 10;
     const offset = (page - 1) * limit;
     const filters = await applicantHelper.comments(query, applicantId);
-    const applicantExists = await getSingleRecordByAColumnValue<Comments>(comments, "applicant_id", applicantId);
+    const applicantExists = await getSingleRecordByAColumnValue<Applicant>(applicants, "id", applicantId);
     if (!applicantExists || applicantExists.deleted_at !== null) {
-      throw new NotFoundException(INVALID_APPLICANT_ID);
+      throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
-    const [total_records, applicantsData] = await Promise.all([
+    const [total_records, commentsData] = await Promise.all([
       getRecordsCount(comments, filters),
-      getAllComments(filters, offset, limit, applicantExists.applicant_id),
+      getAllComments(filters, offset, limit, applicantId),
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
-    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationData, applicantsData });
+    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationInfo:paginationData, records: commentsData });
   };
 
   updateCommentByApplicantById = async (c: Context) => {
