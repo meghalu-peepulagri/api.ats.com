@@ -1,4 +1,4 @@
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import db from "../database/configuration.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
@@ -77,7 +77,7 @@ export async function getAllComments(filters, offset, limit, applicantId) {
         where: and(...filters, eq(comments.applicant_id, applicantId)),
         offset,
         limit,
-        orderBy: [desc(comments.commented_at)],
+        orderBy: [asc(comments.commented_at)],
         columns: {
             id: true,
             comment_description: true,

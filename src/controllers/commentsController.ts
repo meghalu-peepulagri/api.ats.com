@@ -57,7 +57,7 @@ class CommentsController {
       getAllComments(filters, offset, limit, applicantId),
     ]);
     const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
-    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationInfo:paginationData, records: commentsData });
+    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationInfo: paginationData, records: commentsData });
   };
 
   updateCommentByApplicantById = async (c: Context) => {

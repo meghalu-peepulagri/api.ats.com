@@ -1,4 +1,4 @@
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 
 import type { NewApplicant } from "../database/schemas/applicants.js";
 
@@ -63,7 +63,7 @@ export async function updateStatusApplicant(id: number, status: string) {
 }
 
 export async function listApplicants(filters: any, offset: number, limit: number) {
-  const result = await db.select({ firstname: applicants.first_name,lastName:applicants.last_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at })
+  const result = await db.select({ firstname: applicants.first_name, lastName: applicants.last_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at })
     .from(applicants)
     .where(and(...filters))
     .offset(offset)
@@ -92,7 +92,7 @@ export async function getAllComments(filters: any, offset: number, limit: number
     where: and(...filters, eq(comments.applicant_id, applicantId)),
     offset,
     limit,
-    orderBy: [desc(comments.commented_at)],
+    orderBy: [asc(comments.commented_at)],
     columns: {
       id: true,
       comment_description: true,

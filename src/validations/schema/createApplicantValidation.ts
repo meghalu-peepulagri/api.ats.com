@@ -46,7 +46,7 @@ export const vCreateApplicant = z.object({
   education: z.string().trim().optional(),
 
   salary_expectation: z.string().trim().optional(),
-  
+
   role: z.preprocess(
     val => val === "" ? undefined : val,
     z.string({
