@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ALTER COLUMN "commented_by" SET DATA TYPE integer;
