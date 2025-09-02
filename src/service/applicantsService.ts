@@ -137,9 +137,9 @@ export async function applicantsStats() {
 
   return {
     totalApplicants,
-    totalScreened: stats.SCREENED || 0,
-    totalHired: stats.HIRED || 0,
-    totalRejected: stats.REJECTED || 0,
-    totalJoined: stats.JOINED || 0,
+    Screened: stats.SCREENED || 0,
+    Hired: stats.HIRED || 0,
+    Rejected: stats.REJECTED || 0,
+    Joined: stats.JOINED || 0,
   };
 }
