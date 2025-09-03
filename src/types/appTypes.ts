@@ -4,9 +4,9 @@ import type { Applicant, ApplicantTable } from "../database/schemas/applicants.j
 import type { Comments, CommentsTable } from "../database/schemas/comments.js";
 import type { User, UsersTable } from "../database/schemas/users.js";
 import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
+import type { TCreateRole } from "../validations/schema/addRoleSchema.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 import type { VCreateUserSchema, VUserLoginSchema } from "../validations/schema/createUserValidation.js";
-import type { TCreateRole } from "../validations/schema/addRoleSchema.js";
 
 export type ValidatedRequest = TCreateApplicant | VCreateUserSchema | VUserLoginSchema | ValidateCreateSchema | TCreateRole;
 
