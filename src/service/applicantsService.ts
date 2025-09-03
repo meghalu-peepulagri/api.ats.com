@@ -132,7 +132,7 @@ export async function applicantsStats() {
   return {
     totalApplicants,
     applied: stats.APPLIED || 0,
-    screened: stats.SCREENED || 0,
+    screened: (stats.SCREENED + stats.HIRED + stats.JOINED + stats.REJECTED) || 0,
     hired: stats.HIRED || 0,
     rejected: stats.REJECTED || 0,
     joined: stats.JOINED || 0,
