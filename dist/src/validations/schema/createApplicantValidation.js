@@ -4,7 +4,7 @@ export var applicantStatus;
     applicantStatus["APPLIED"] = "APPLIED";
     applicantStatus["SCREENED"] = "SCREENED";
     applicantStatus["INTERVIEWED"] = "INTERVIEWED";
-    applicantStatus["INTERVIEW_SCHEDULED"] = "INTERVIEW_SCHEDULED";
+    applicantStatus["SCHEDULE_INTERVIEW"] = "SCHEDULE_INTERVIEW";
     applicantStatus["HIRED"] = "HIRED";
     applicantStatus["REJECTED"] = "REJECTED";
     applicantStatus["JOINED"] = "JOINED";
