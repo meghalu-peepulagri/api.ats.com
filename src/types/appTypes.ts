@@ -6,10 +6,11 @@ import type { User, UsersTable } from "../database/schemas/users.js";
 import type { ValidateCreateSchema } from "../validations/schema/addCommentSchema.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 import type { VCreateUserSchema, VUserLoginSchema } from "../validations/schema/createUserValidation.js";
+import type { TCreateRole } from "../validations/schema/addRoleSchema.js";
 
-export type ValidatedRequest = TCreateApplicant | VCreateUserSchema | VUserLoginSchema | ValidateCreateSchema;
+export type ValidatedRequest = TCreateApplicant | VCreateUserSchema | VUserLoginSchema | ValidateCreateSchema | TCreateRole;
 
-export type AppActivity = "add-applicant" | "add-user" | "login" | "add-comment";
+export type AppActivity = "add-applicant" | "add-user" | "login" | "add-comment" | "add-role";
 
 export type DBTable = ApplicantTable;
 export type DBRecord<T extends DBTable>
