@@ -86,12 +86,12 @@ class ApplicantsController {
     if (!applicant || applicant.deleted_at !== null) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
-    const updatedStatus = reqBody.status.trim();
+    const updatedStatus = reqBody.status.trim().replace(/\s+/g, "_").toUpperCase();
 
-    if (!Object.values(applicantStatus).includes(updatedStatus.toUpperCase())) {
+    if (!Object.values(applicantStatus).includes(updatedStatus)) {
       throw new BadRequestException(INVALID_STATUS);
     }
-    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus.toUpperCase() });
+    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
 

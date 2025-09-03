@@ -120,7 +120,7 @@ export async function applicantsStats() {
         hired: stats.HIRED || 0,
         rejected: stats.REJECTED || 0,
         interviewed: stats.INTERVIEWED || 0,
-        interview_scheduled: stats.INTERVIEW_SCHEDULED || 0,
+        interview_scheduled: stats.SCHEDULE_INTERVIEW || 0,
         joined: stats.JOINED || 0,
     };
 }
