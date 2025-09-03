@@ -8,5 +8,6 @@ const rolesController = new RolesController();
 
 roleRoute.post("/", rolesController.addRole.bind(rolesController));
 roleRoute.get("/", rolesController.listRoles.bind(rolesController));
+roleRoute.patch("/:id", rolesController.editRoleById.bind(rolesController));
 
 export default roleRoute;

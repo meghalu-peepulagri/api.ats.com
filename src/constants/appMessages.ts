@@ -71,3 +71,4 @@ export const ROLE_NOT_FOUND = "Role not found";
 export const ROLE_UPDATED = "Role updated successfully";
 export const ROLE_DELETED = "Role deleted successfully";
 export const ROLE_EXISTED = "Role already exists";
+export const ROLES_FETCHED = "Roles fetched successfully";
