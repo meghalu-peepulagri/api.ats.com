@@ -9,7 +9,16 @@ import * as users from "./schemas/users.js";
 const { Pool } = pg;
 
 const dbClient = new Pool({
+  // host: dbConfig.host,
+  // port: dbConfig.port,
+  // user: dbConfig.user,
+  // password: dbConfig.password,
+  // database: dbConfig.database,
   connectionString: dbConfig.connectionString,
+  // ssl: {
+  //   rejectUnauthorized: true,
+  //   ca: fs.readFileSync(`${process.cwd()}/ca.pem`).toString(),
+  // },
 });
 const db = drizzle(dbClient, {
   schema: {

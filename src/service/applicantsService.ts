@@ -119,27 +119,22 @@ export async function getAllComments(filters: any, offset: number, limit: number
 //   return {stats:applicantsData.rows, totalApplicants: totalApplicants[0].total};
 // }
 export async function applicantsStats() {
-  const query = sql` SELECT status, COUNT(*) AS count,
-      (SELECT COUNT(*) FROM ${applicants}) AS total
-    FROM ${applicants}
-    GROUP BY status
-  `;
-
+  const query = sql`with dummy as (
+  select * from applicants where ${applicants.deleted_at} is null
+  )  select status , count(*) as count from dummy group by status
+    `;
   const applicantsData = await db.execute(query);
-
   const stats: Record<string, number> = {};
-  let totalApplicants = 0;
-
   applicantsData.rows.forEach((row: any) => {
     stats[row.status] = Number(row.count);
-    totalApplicants = Number(row.total);
   });
-
+  const totalApplicants = applicantsData.rows.map((row: any) => Number(row.count)).reduce((acc, count) => acc + count, 0);
   return {
     totalApplicants,
-    Screened: stats.SCREENED || 0,
-    Hired: stats.HIRED || 0,
-    Rejected: stats.REJECTED || 0,
-    Joined: stats.JOINED || 0,
+    applied: stats.APPLIED || 0,
+    screened: stats.SCREENED || 0,
+    hired: stats.HIRED || 0,
+    rejected: stats.REJECTED || 0,
+    joined: stats.JOINED || 0,
   };
 }
