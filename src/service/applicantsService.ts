@@ -129,10 +129,11 @@ export async function applicantsStats() {
     stats[row.status] = Number(row.count);
   });
   const totalApplicants = applicantsData.rows.map((row: any) => Number(row.count)).reduce((acc, count) => acc + count, 0);
+  const screenedCount = (stats.SCREENED || 0) + (stats.HIRED || 0) + (stats.JOINED || 0) + (stats.REJECTED || 0);
   return {
     totalApplicants,
     applied: stats.APPLIED || 0,
-    screened: (stats.SCREENED + stats.HIRED + stats.JOINED + stats.REJECTED) || 0,
+    screened: screenedCount,
     hired: stats.HIRED || 0,
     rejected: stats.REJECTED || 0,
     joined: stats.JOINED || 0,
