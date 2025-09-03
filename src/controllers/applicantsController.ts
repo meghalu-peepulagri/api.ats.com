@@ -4,7 +4,7 @@ import type { Applicant } from "../database/schemas/applicants.js";
 import type { User } from "../database/schemas/users.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
@@ -120,6 +120,23 @@ class ApplicantsController {
     return sendResponse(c, 200, APPLICANT_DELETED);
   };
 
+  editApplicantRoleById = async (c: Context) => {
+    const applicantId = c.req.param("id");
+    const reqBody = await c.req.json();
+    if (!reqBody.role || reqBody.role.trim() === "") {
+      throw new BadRequestException(ROLE_IS_REQUIRED);
+    }
+    if (!applicantId) {
+      throw new BadRequestException(APPLICANT_ID_REQUIRED);
+    }
+    const applicant = await getRecordById<Applicant>(applicants, +applicantId);
+    if (!applicant || applicant.deleted_at !== null) {
+      throw new NotFoundException(INVALID_APPLICANT_ID);
+    }
+    const updatedRole = reqBody.role.trim();
+    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { role: updatedRole });
+    return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
+  };
 
   editApplicant = async (c: Context) => {
     const applicantId = c.req.param("id");
@@ -131,12 +148,12 @@ class ApplicantsController {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
 
-    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id"], [validatedReqData.email, +applicantId],["eq","ne"]);
+    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id"], [validatedReqData.email, +applicantId], ["eq", "ne"]);
     if (existingApplicantEmail) {
       throw new ConflictException(EMAIL_EXISTED);
     }
 
-    const existingApplicantPhoneNumber = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["phone", "id"], [validatedReqData.phone, +applicantId],["eq","ne"]);
+    const existingApplicantPhoneNumber = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["phone", "id"], [validatedReqData.phone, +applicantId], ["eq", "ne"]);
     if (existingApplicantPhoneNumber) {
       throw new ConflictException(PHONE_NUMBER_EXISTED);
     }
@@ -144,6 +161,5 @@ class ApplicantsController {
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, validatedReqData);
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
-
 };
 export default ApplicantsController;

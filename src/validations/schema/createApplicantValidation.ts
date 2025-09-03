@@ -3,6 +3,8 @@ import { z } from "zod";
 export enum applicantStatus {
   APPLIED = "APPLIED",
   SCREENED = "SCREENED",
+  INTERVIEWED = "INTERVIEWED",
+  INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED",
   HIRED = "HIRED",
   REJECTED = "REJECTED",
   JOINED = "JOINED",

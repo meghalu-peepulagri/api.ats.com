@@ -1,11 +1,11 @@
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, RESUME_KEY_EXISTED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
 import { applicantsStats, getRecordsCount, listApplicants } from "../service/applicantsService.js";
-import { getRecordById, getSingleRecordByAColumnValue, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
+import { getRecordById, getSingleRecordByAColumnValue, getSingleRecordByMultipleColumnValues, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { applicantStatus } from "../validations/schema/createApplicantValidation.js";
@@ -19,10 +19,6 @@ class ApplicantsController {
         const existingApplicantEmail = await getSingleRecordByAColumnValue(applicants, "email", validatedReqData.email);
         if (existingApplicantEmail) {
             throw new ConflictException(EMAIL_EXISTED);
-        }
-        const existingApplicantResumeKey = await getSingleRecordByAColumnValue(applicants, "resume_key_path", validatedReqData.resume_key_path);
-        if (existingApplicantResumeKey) {
-            throw new ConflictException(RESUME_KEY_EXISTED);
         }
         const existingApplicantPhoneNumber = await getSingleRecordByAColumnValue(applicants, "phone", validatedReqData.phone);
         if (existingApplicantPhoneNumber) {
@@ -108,6 +104,42 @@ class ApplicantsController {
             throw new NotFoundException(APPLICANT_NOT_FOUND);
         }
         return sendResponse(c, 200, APPLICANT_DELETED);
+    };
+    editApplicantRoleById = async (c) => {
+        const applicantId = c.req.param("id");
+        const reqBody = await c.req.json();
+        if (!reqBody.role || reqBody.role.trim() === "") {
+            throw new BadRequestException(ROLE_IS_REQUIRED);
+        }
+        if (!applicantId) {
+            throw new BadRequestException(APPLICANT_ID_REQUIRED);
+        }
+        const applicant = await getRecordById(applicants, +applicantId);
+        if (!applicant || applicant.deleted_at !== null) {
+            throw new NotFoundException(INVALID_APPLICANT_ID);
+        }
+        const updatedRole = reqBody.role.trim();
+        const updatedApplicant = await updateRecordById(applicants, +applicantId, { role: updatedRole });
+        return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
+    };
+    editApplicant = async (c) => {
+        const applicantId = c.req.param("id");
+        const reqBody = await c.req.json();
+        const validatedReqData = await validatedRequest("add-applicant", reqBody, ADD_APPLICANT_VALIDATION_CRITERIA);
+        const applicant = await getRecordById(applicants, +applicantId);
+        if (!applicant || applicant.deleted_at !== null) {
+            throw new NotFoundException(APPLICANT_NOT_FOUND);
+        }
+        const existingApplicantEmail = await getSingleRecordByMultipleColumnValues(applicants, ["email", "id"], [validatedReqData.email, +applicantId], ["eq", "ne"]);
+        if (existingApplicantEmail) {
+            throw new ConflictException(EMAIL_EXISTED);
+        }
+        const existingApplicantPhoneNumber = await getSingleRecordByMultipleColumnValues(applicants, ["phone", "id"], [validatedReqData.phone, +applicantId], ["eq", "ne"]);
+        if (existingApplicantPhoneNumber) {
+            throw new ConflictException(PHONE_NUMBER_EXISTED);
+        }
+        const updatedApplicant = await updateRecordById(applicants, +applicantId, validatedReqData);
+        return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
     };
 }
 ;

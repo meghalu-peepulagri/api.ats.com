@@ -3,6 +3,8 @@ export var applicantStatus;
 (function (applicantStatus) {
     applicantStatus["APPLIED"] = "APPLIED";
     applicantStatus["SCREENED"] = "SCREENED";
+    applicantStatus["INTERVIEWED"] = "INTERVIEWED";
+    applicantStatus["INTERVIEW_SCHEDULED"] = "INTERVIEW_SCHEDULED";
     applicantStatus["HIRED"] = "HIRED";
     applicantStatus["REJECTED"] = "REJECTED";
     applicantStatus["JOINED"] = "JOINED";
