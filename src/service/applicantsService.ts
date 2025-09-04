@@ -18,7 +18,7 @@ export async function createApplicant(reqBody: NewApplicant) {
         last_name: reqBody.last_name,
         email: reqBody.email,
         phone: reqBody.phone,
-        role: reqBody.role ?? "Applicant",
+        role_id: reqBody.role_id,
         status: reqBody.status ?? "pending",
         resume_key_path: reqBody.resume_key_path,
       })

@@ -41,14 +41,6 @@ export const vCreateApplicant = z.object({
     status: z.string().default("APPLIED").optional(),
     education: z.string().trim().optional(),
     salary_expectation: z.string().trim().optional(),
-    //TODO: Need to remove this in future
-    role: z.preprocess(val => val === "" ? undefined : val, z.string({
-        error: (issue) => {
-            if (issue.input === undefined)
-                return "Role is required";
-            return "Invalid role";
-        },
-    })),
     role_id: z.preprocess(val => val === null ? undefined : val, z.number({
         error: (issue) => {
             if (issue.input === undefined)
