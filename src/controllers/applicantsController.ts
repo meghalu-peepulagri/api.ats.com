@@ -127,7 +127,7 @@ class ApplicantsController {
   editApplicantRoleById = async (c: Context) => {
     const applicantId = c.req.param("id");
     const reqBody = await c.req.json();
-    if (!reqBody.role_id || reqBody.role_id.trim() === "") {
+    if (!reqBody.role_id) {
       throw new BadRequestException(ROLE_IS_REQUIRED);
     }
     if (!applicantId) {
