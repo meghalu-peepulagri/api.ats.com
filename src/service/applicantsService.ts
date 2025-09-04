@@ -147,7 +147,7 @@ export async function getApplicantByIdWithRelations(id: number) {
           id: true,
           role: true,
         },
-      }
-    }
+      },
+    },
   });
 }

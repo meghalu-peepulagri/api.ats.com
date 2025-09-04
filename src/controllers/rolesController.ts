@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 
 import type { Role } from "../database/schemas/roles.js";
+import type { OrderByQueryData } from "../types/dbTypes.js";
 import type { TCreateRole } from "../validations/schema/addRoleSchema.js";
 
 import { ADD_ROLE_VALIDATION_CRITERIA, ROLE_CREATED, ROLE_EXISTED, ROLE_NOT_FOUND, ROLE_UPDATED, ROLES_FETCHED } from "../constants/appMessages.js";
@@ -10,7 +11,6 @@ import NotFoundException from "../exceptions/notFoundException.js";
 import { getRecordsConditionally, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { validatedRequest } from "../validations/validateRequest.js";
-import type { OrderByQueryData } from "../types/dbTypes.js";
 
 class RolesController {
   addRole = async (c: Context) => {
@@ -29,7 +29,7 @@ class RolesController {
 
   listRoles = async (c: Context) => {
     const orderByQueryData: OrderByQueryData<Role> = { columns: ["role"], values: ["asc"] };
-    const allRoles = await getRecordsConditionally<Role>(roles,null, null, orderByQueryData);
+    const allRoles = await getRecordsConditionally<Role>(roles, null, null, orderByQueryData);
     return sendResponse(c, 200, ROLES_FETCHED, allRoles);
   };
 

@@ -3,8 +3,8 @@ import pg from "pg";
 import { dbConfig } from "../config/dbConfig.js";
 import * as applicants from "./schemas/applicants.js";
 import * as comments from "./schemas/comments.js";
-import * as users from "./schemas/users.js";
 import * as roles from "./schemas/roles.js";
+import * as users from "./schemas/users.js";
 const { Pool } = pg;
 const dbClient = new Pool({
     // host: dbConfig.host,
@@ -23,7 +23,7 @@ const db = drizzle(dbClient, {
         ...applicants,
         ...comments,
         ...users,
-        ...roles
+        ...roles,
     },
 });
 export default db;

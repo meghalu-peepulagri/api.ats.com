@@ -1,6 +1,6 @@
+import { relations } from "drizzle-orm";
 import { index, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { roles } from "./roles.js";
-import { relations } from "drizzle-orm";
 import { users } from "./users.js";
 export const applicants = pgTable("applicants", {
     id: serial("id").primaryKey(),
