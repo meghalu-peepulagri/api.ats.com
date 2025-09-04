@@ -161,8 +161,8 @@ class ApplicantsController {
     if (existingApplicantPhoneNumber) {
       throw new ConflictException(PHONE_NUMBER_EXISTED);
     }
-
-    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, validatedReqData);
+    const { status, ...applicantData } = validatedReqData;
+    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, applicantData);
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
 };
