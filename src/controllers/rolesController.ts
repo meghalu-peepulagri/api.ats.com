@@ -10,6 +10,7 @@ import NotFoundException from "../exceptions/notFoundException.js";
 import { getRecordsConditionally, getSingleRecordByAColumnValue, saveSingleRecord, updateRecordById } from "../service/db/baseDbService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { validatedRequest } from "../validations/validateRequest.js";
+import type { OrderByQueryData } from "../types/dbTypes.js";
 
 class RolesController {
   addRole = async (c: Context) => {
@@ -27,7 +28,8 @@ class RolesController {
   };
 
   listRoles = async (c: Context) => {
-    const allRoles = await getRecordsConditionally<Role>(roles);
+    const orderByQueryData: OrderByQueryData<Role> = { columns: ["role"], values: ["asc"] };
+    const allRoles = await getRecordsConditionally<Role>(roles,null, null, orderByQueryData);
     return sendResponse(c, 200, ROLES_FETCHED, allRoles);
   };
 

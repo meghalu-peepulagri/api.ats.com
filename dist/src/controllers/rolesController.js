@@ -17,7 +17,8 @@ class RolesController {
         return sendResponse(c, 201, ROLE_CREATED, newRole);
     };
     listRoles = async (c) => {
-        const allRoles = await getRecordsConditionally(roles);
+        const orderByQueryData = { columns: ["role"], values: ["asc"] };
+        const allRoles = await getRecordsConditionally(roles, null, null, orderByQueryData);
         return sendResponse(c, 200, ROLES_FETCHED, allRoles);
     };
     editRoleById = async (c) => {
