@@ -48,6 +48,7 @@ class ApplicantsController {
     if (!applicantData || applicantData.deleted_at !== null) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
+
     const resumeUrl = applicantData.resume_key_path;
     const presignedUrl = await s3Service.generateDownloadPresignedUrl(resumeUrl);
     if (!presignedUrl) {
