@@ -21,11 +21,11 @@ class UsersController {
   addUser = async (c: Context) => {
     const reqBody = await c.req.json();
     const validUserReq = await validatedRequest<VCreateUserSchema>("add-user", reqBody, ADD_USER_VALIDATION_CRITERIA);
-    const signupUser = await getSingleRecordByAColumnValue<User>(users, "email", validUserReq.email, "=");
+    const signupUser = await getSingleRecordByAColumnValue<User>(users, "email", validUserReq.email.toLowerCase(), ["LOWER"]);
     if (signupUser && signupUser?.deleted_at === null) {
       throw new ConflictException(EMAIL_EXISTED);
     }
-    const existingUserPhone = await getSingleRecordByAColumnValue<User>(users, "phone", "=", validUserReq.phone);
+    const existingUserPhone = await getSingleRecordByAColumnValue<User>(users, "phone", validUserReq.phone, ["eq"]);
     if (existingUserPhone && existingUserPhone?.deleted_at === null) {
       throw new ConflictException(PHONE_NUMBER_EXISTED);
     }
@@ -39,7 +39,7 @@ class UsersController {
   loginUserByEmail = async (c: Context) => {
     const reqBody = await c.req.json();
     const validUserReq = await validatedRequest<VUserLoginSchema>("login", reqBody, LOGIN_VALIDATION_CRETERIA);
-    const loginUser = await getSingleRecordByAColumnValue<User>(users, "email", validUserReq.email, "=");
+    const loginUser = await getSingleRecordByAColumnValue<User>(users, "email", validUserReq.email.toLowerCase(), ["LOWER"]);
     if (!loginUser || !loginUser?.password) {
       throw new UnauthorizedException(INVALID_CREDENTIALS);
     }

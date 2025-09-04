@@ -14,11 +14,11 @@ class UsersController {
     addUser = async (c) => {
         const reqBody = await c.req.json();
         const validUserReq = await validatedRequest("add-user", reqBody, ADD_USER_VALIDATION_CRITERIA);
-        const signupUser = await getSingleRecordByAColumnValue(users, "email", validUserReq.email, "=");
+        const signupUser = await getSingleRecordByAColumnValue(users, "email", validUserReq.email.toLowerCase(), ["LOWER"]);
         if (signupUser && signupUser?.deleted_at === null) {
             throw new ConflictException(EMAIL_EXISTED);
         }
-        const existingUserPhone = await getSingleRecordByAColumnValue(users, "phone", "=", validUserReq.phone);
+        const existingUserPhone = await getSingleRecordByAColumnValue(users, "phone", validUserReq.phone, ["eq"]);
         if (existingUserPhone && existingUserPhone?.deleted_at === null) {
             throw new ConflictException(PHONE_NUMBER_EXISTED);
         }
@@ -31,7 +31,7 @@ class UsersController {
     loginUserByEmail = async (c) => {
         const reqBody = await c.req.json();
         const validUserReq = await validatedRequest("login", reqBody, LOGIN_VALIDATION_CRETERIA);
-        const loginUser = await getSingleRecordByAColumnValue(users, "email", validUserReq.email, "=");
+        const loginUser = await getSingleRecordByAColumnValue(users, "email", validUserReq.email.toLowerCase(), ["LOWER"]);
         if (!loginUser || !loginUser?.password) {
             throw new UnauthorizedException(INVALID_CREDENTIALS);
         }
