@@ -137,7 +137,7 @@ class ApplicantsController {
     if (!applicant || applicant.deleted_at !== null) {
       throw new NotFoundException(INVALID_APPLICANT_ID);
     }
-    const updatedRole = reqBody.role_id.trim();
+    const updatedRole = reqBody.role_id;
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { role_id: updatedRole });
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
