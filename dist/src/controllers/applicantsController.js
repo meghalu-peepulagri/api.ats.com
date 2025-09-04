@@ -4,7 +4,7 @@ import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
-import { applicantsStats, getRecordsCount, listApplicants } from "../service/applicantsService.js";
+import { applicantsStats, getApplicantByIdWithRelations, getRecordsCount, listApplicants } from "../service/applicantsService.js";
 import { getRecordById, getSingleRecordByAColumnValue, getSingleRecordByMultipleColumnValues, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
@@ -24,6 +24,7 @@ class ApplicantsController {
         if (existingApplicantPhoneNumber) {
             throw new ConflictException(PHONE_NUMBER_EXISTED);
         }
+        validatedReqData.created_by = c.get("user_payload").id;
         const newApplicant = await saveSingleRecord(applicants, validatedReqData);
         return sendResponse(c, 201, APPLICANT_CREATED, newApplicant);
     };
@@ -32,7 +33,7 @@ class ApplicantsController {
         if (!applicantId) {
             throw new BadRequestException(APPLICANT_ID_REQUIRED);
         }
-        const applicantData = await getRecordById(applicants, +applicantId);
+        const applicantData = await getApplicantByIdWithRelations(+applicantId);
         if (!applicantData || applicantData.deleted_at !== null) {
             throw new NotFoundException(INVALID_APPLICANT_ID);
         }
@@ -108,7 +109,7 @@ class ApplicantsController {
     editApplicantRoleById = async (c) => {
         const applicantId = c.req.param("id");
         const reqBody = await c.req.json();
-        if (!reqBody.role || reqBody.role.trim() === "") {
+        if (!reqBody.role_id || reqBody.role_id.trim() === "") {
             throw new BadRequestException(ROLE_IS_REQUIRED);
         }
         if (!applicantId) {
@@ -118,8 +119,8 @@ class ApplicantsController {
         if (!applicant || applicant.deleted_at !== null) {
             throw new NotFoundException(INVALID_APPLICANT_ID);
         }
-        const updatedRole = reqBody.role.trim();
-        const updatedApplicant = await updateRecordById(applicants, +applicantId, { role: updatedRole });
+        const updatedRole = reqBody.role_id.trim();
+        const updatedApplicant = await updateRecordById(applicants, +applicantId, { role_id: updatedRole });
         return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
     };
     editApplicant = async (c) => {

@@ -5,6 +5,7 @@ import type { NewApplicant } from "../database/schemas/applicants.js";
 import db from "../database/configuration.js";
 import { applicants } from "../database/schemas/applicants.js";
 import { comments } from "../database/schemas/comments.js";
+import { roles } from "../database/schemas/roles.js";
 
 export async function getAllApplicants() {
   return await db.select().from(applicants);
@@ -63,9 +64,10 @@ export async function updateStatusApplicant(id: number, status: string) {
 }
 
 export async function listApplicants(filters: any, offset: number, limit: number) {
-  const result = await db.select({ firstname: applicants.first_name, lastName: applicants.last_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: applicants.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at })
+  const result = await db.select({ firstname: applicants.first_name, lastName: applicants.last_name, email: applicants.email, phone: applicants.phone, id: applicants.id, role: roles.role, status: applicants.status, created_at: applicants.created_at, updated_at: applicants.updated_at, deleted_at: applicants.deleted_at })
     .from(applicants)
     .where(and(...filters))
+    .leftJoin(roles, eq(applicants.role_id, roles.id))
     .offset(offset)
     .limit(limit)
     .orderBy(desc(applicants.created_at));
@@ -112,12 +114,6 @@ export async function getAllComments(filters: any, offset: number, limit: number
   return result;
 }
 
-// export async function applicantsStats() {
-//   const query = sql`select status, count(*) from applicants group by status`;
-//   const applicantsData = await db.execute(query);
-//   const totalApplicants = await db.select({ total: count() }).from(applicants);
-//   return {stats:applicantsData.rows, totalApplicants: totalApplicants[0].total};
-// }
 export async function applicantsStats() {
   const query = sql`with dummy as (
   select * from applicants where ${applicants.deleted_at} is null
@@ -140,4 +136,18 @@ export async function applicantsStats() {
     interview_scheduled: stats.SCHEDULE_INTERVIEW || 0,
     joined: stats.JOINED || 0,
   };
+}
+
+export async function getApplicantByIdWithRelations(id: number) {
+  return await db.query.applicants.findFirst({
+    where: eq(applicants.id, id),
+    with: {
+      role: {
+        columns: {
+          id: true,
+          role: true,
+        },
+      }
+    }
+  });
 }

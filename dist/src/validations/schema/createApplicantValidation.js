@@ -41,6 +41,7 @@ export const vCreateApplicant = z.object({
     status: z.string().default("APPLIED").optional(),
     education: z.string().trim().optional(),
     salary_expectation: z.string().trim().optional(),
+    //TODO: Need to remove this in future
     role: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
@@ -48,6 +49,20 @@ export const vCreateApplicant = z.object({
             return "Invalid role";
         },
     })),
+    role_id: z.preprocess(val => val === null ? undefined : val, z.number({
+        error: (issue) => {
+            if (issue.input === undefined)
+                return "Role is required";
+            return "Invalid role";
+        },
+    })),
+    experience: z.preprocess(val => val === null ? undefined : val, z.number({
+        error: (issue) => {
+            if (issue.input === undefined)
+                return "Experience is required";
+            return "Invalid experience";
+        },
+    }).min(0, "Experience cannot be negative").max(50, "Experience seems invalid")).optional(),
     resume_key_path: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
@@ -55,4 +70,6 @@ export const vCreateApplicant = z.object({
             return "Invalid resume key";
         },
     })),
+    created_by: z.number().optional(),
+    updated_by: z.number().optional(),
 });

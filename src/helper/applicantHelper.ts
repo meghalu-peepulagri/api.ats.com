@@ -22,7 +22,7 @@ export class ApplicantHelper {
       filters.push(sql`${applicants.status} ILIKE ${`%${status}%`}`);
     }
     if (role?.trim()) {
-      filters.push(sql`LOWER(${applicants.role}) = LOWER(${`${role}`})`);
+      filters.push(sql`${applicants.role_id} = ${`${role}`}`);
     }
     filters.push(sql`${applicants.deleted_at} IS NULL`);
     return filters;
