@@ -31,7 +31,7 @@ export const vCreateApplicant = z.object({
             return "Invalid phone number";
         },
     }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" })),
-    email: z.string({
+    email: z.email({
         error: (issue) => {
             if (issue.input === undefined)
                 return "Email is required";
@@ -52,8 +52,8 @@ export const vCreateApplicant = z.object({
     resume_key_path: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
-                return "Resume key is required";
-            return "Invalid resume key";
+                return "Resume is required";
+            return "Invalid resume";
         },
     })),
     created_by: z.number().optional(),

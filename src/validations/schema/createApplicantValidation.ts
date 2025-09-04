@@ -36,7 +36,7 @@ export const vCreateApplicant = z.object({
     }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }),
   ),
 
-  email: z.string({
+  email: z.email({
     error: (issue) => {
       if (issue.input === undefined)
         return "Email is required";
@@ -64,8 +64,8 @@ export const vCreateApplicant = z.object({
     z.string({
       error: (issue) => {
         if (issue.input === undefined)
-          return "Resume key is required";
-        return "Invalid resume key";
+          return "Resume is required";
+        return "Invalid resume";
       },
     }),
   ),
