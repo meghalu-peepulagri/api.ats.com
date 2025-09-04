@@ -16,28 +16,28 @@ export const vCreateApplicant = z.object({
                 return "Last name is required";
             return "Invalid last name";
         },
-    }).nonempty("First name is required"),
+    }).trim().nonempty("First name is required"),
     last_name: z.string({
         error: (issue) => {
             if (issue.input === undefined)
                 return "Last name is required";
             return "Invalid last name";
         },
-    }).nonempty("Last name is required"),
+    }).trim().nonempty("Last name is required"),
     phone: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
                 return "Phone number is required";
             return "Invalid phone number";
         },
-    }).regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" })),
+    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" })),
     email: z.string({
         error: (issue) => {
             if (issue.input === undefined)
                 return "Email is required";
             return "Invalid email";
         },
-    }).nonempty("Email is required"),
+    }).trim().nonempty("Email is required"),
     status: z.string().default("APPLIED").optional(),
     education: z.string().trim().optional(),
     salary_expectation: z.string().trim().optional(),
@@ -48,13 +48,7 @@ export const vCreateApplicant = z.object({
             return "Invalid role";
         },
     })),
-    experience: z.preprocess(val => val === null ? undefined : val, z.number({
-        error: (issue) => {
-            if (issue.input === undefined)
-                return "Experience is required";
-            return "Invalid experience";
-        },
-    }).min(0, "Experience cannot be negative").max(50, "Experience seems invalid")).optional(),
+    experience: z.number().min(0, "Experience cannot be negative").max(50, "Experience seems invalid").nullable(),
     resume_key_path: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
