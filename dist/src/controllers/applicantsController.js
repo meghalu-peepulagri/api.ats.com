@@ -131,7 +131,7 @@ class ApplicantsController {
         if (!applicant || applicant.deleted_at !== null) {
             throw new NotFoundException(APPLICANT_NOT_FOUND);
         }
-        const existingApplicantEmail = await getSingleRecordByMultipleColumnValues(applicants, ["email", "id", "role_id"], [validatedReqData.email, +applicantId], ["eq", "ne", "eq"]);
+        const existingApplicantEmail = await getSingleRecordByMultipleColumnValues(applicants, ["email", "id", "role_id"], [validatedReqData.email, +applicantId, validatedReqData.role_id], ["eq", "ne", "eq"]);
         if (existingApplicantEmail) {
             throw new ConflictException(EMAIL_EXISTED);
         }

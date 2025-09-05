@@ -146,13 +146,12 @@ class ApplicantsController {
     const applicantId = c.req.param("id");
     const reqBody = await c.req.json();
     const validatedReqData = await validatedRequest<TCreateApplicant>("add-applicant", reqBody, ADD_APPLICANT_VALIDATION_CRITERIA);
-
     const applicant = await getRecordById<Applicant>(applicants, +applicantId);
     if (!applicant || applicant.deleted_at !== null) {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
 
-    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id","role_id"], [validatedReqData.email, +applicantId], ["eq", "ne","eq"]);
+    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id","role_id"], [validatedReqData.email, +applicantId,validatedReqData.role_id], ["eq", "ne","eq"]);
     if (existingApplicantEmail) {
       throw new ConflictException(EMAIL_EXISTED);
     }
