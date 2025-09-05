@@ -50,6 +50,13 @@
       "when": 1756979366760,
       "tag": "0006_charming_whizzer",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1757063980170,
+      "tag": "0007_worthless_the_twelve",
+      "breakpoints": true
     }
   ]
 }

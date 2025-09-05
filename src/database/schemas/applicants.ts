@@ -9,8 +9,8 @@ export const applicants = pgTable("applicants", {
 
   first_name: text("first_name"),
   last_name: text("last_name"),
-  email: text("email").notNull().unique(),
-  phone: text("phone").unique(),
+  email: text("email").notNull(),
+  phone: text("phone"),
   role_id: integer("role_id").references(() => roles.id),
   status: varchar("status"),
   education: text("education"),
