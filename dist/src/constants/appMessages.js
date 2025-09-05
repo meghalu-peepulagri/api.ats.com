@@ -36,6 +36,7 @@ export const EMAIL_EXISTED = "Email already exists";
 export const PHONE_NUMBER_EXISTED = "Phone number already exists";
 export const RESUME_KEY_EXISTED = "Resume key already exists";
 export const APPLICANT_CREATED = "Applicant created successfully";
+export const APPLICANT_EXISTED_WITH_SAME_ROLE = "Applicant with same email already exists with the same role";
 export const APPLICANT_ID_REQUIRED = "Applicant id is required";
 export const APPLICANT_NOT_FOUND = "Applicant not found";
 export const APPLICANTS_NOT_FOUND = "Applicants not found";

@@ -1,4 +1,4 @@
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_EXISTED_WITH_SAME_ROLE, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
@@ -16,14 +16,14 @@ class ApplicantsController {
     addApplicant = async (c) => {
         const reqBody = await c.req.json();
         const validatedReqData = await validatedRequest("add-applicant", reqBody, ADD_APPLICANT_VALIDATION_CRITERIA);
-        const existingApplicantEmail = await getSingleRecordByAColumnValue(applicants, "email", validatedReqData.email);
+        const existingApplicantEmail = await getSingleRecordByMultipleColumnValues(applicants, ["email", "role_id"], [validatedReqData.email.toLowerCase(), validatedReqData.role_id], ["LOWER", "eq"]);
         if (existingApplicantEmail) {
-            throw new ConflictException(EMAIL_EXISTED);
+            throw new ConflictException(APPLICANT_EXISTED_WITH_SAME_ROLE);
         }
-        const existingApplicantPhoneNumber = await getSingleRecordByAColumnValue(applicants, "phone", validatedReqData.phone);
-        if (existingApplicantPhoneNumber) {
-            throw new ConflictException(PHONE_NUMBER_EXISTED);
-        }
+        // const existingApplicantPhoneNumber = await getSingleRecordByAColumnValue<Applicant, "phone">(applicants, "phone", validatedReqData.phone);
+        // if (existingApplicantPhoneNumber) {
+        //   throw new ConflictException(PHONE_NUMBER_EXISTED);
+        // }
         validatedReqData.created_by = c.get("user_payload").id;
         const newApplicant = await saveSingleRecord(applicants, validatedReqData);
         return sendResponse(c, 201, APPLICANT_CREATED, newApplicant);
