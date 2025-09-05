@@ -59,6 +59,7 @@ export const ROLE_IS_REQUIRED = "Role is required";
 // file
 
 export const UPLOAD_FILE_VALIDATION_CRITERIA = "Upload file details provided do not meet the required validation criteria";
+export const DOWNLOAD_FILE_VALIDATION_CRITERIA = "Download file details provided do not meet the required validation criteria";
 
 export const UPLOAD_URL_GENERATED = "Upload url generated successfully";
 export const DOWNLOAD_URL_GENERATED = "Download url generated successfully";

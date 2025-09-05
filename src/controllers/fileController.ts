@@ -2,12 +2,13 @@ import type { Context } from "hono";
 
 import { safeParse } from "zod";
 
-import { DOWNLOAD_URL_GENERATED, UPLOAD_FILE_VALIDATION_CRITERIA, UPLOAD_URL_GENERATED } from "../constants/appMessages.js";
+import { DOWNLOAD_FILE_VALIDATION_CRITERIA, DOWNLOAD_URL_GENERATED, UPLOAD_FILE_VALIDATION_CRITERIA, UPLOAD_URL_GENERATED } from "../constants/appMessages.js";
 import UnprocessableContentException from "../exceptions/unProcessableContentException.js";
 import S3FileService from "../service/s3Service.js";
 import { fileNameHelpers } from "../utils/appUtils.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { VDownloadFileSchema, VUploadFileSchema } from "../validations/schema/file.js";
+import { getValidationErrors } from "../utils/onError.js";
 
 const s3Service = new S3FileService();
 
@@ -17,7 +18,8 @@ class FileController {
 
     const validatedReq = safeParse(VUploadFileSchema, reqData);
     if (!validatedReq.success) {
-      throw new UnprocessableContentException(UPLOAD_FILE_VALIDATION_CRITERIA, validatedReq.error);
+      throw new UnprocessableContentException(UPLOAD_FILE_VALIDATION_CRITERIA,
+        getValidationErrors(validatedReq.error.issues));
     }
 
     const atsFileKey = fileNameHelpers(validatedReq.data.file_name, validatedReq.data.file_type);
@@ -32,7 +34,8 @@ class FileController {
 
     const validatedReq = safeParse(VDownloadFileSchema, reqData);
     if (!validatedReq.success) {
-      throw new UnprocessableContentException("Unprocessable Content", validatedReq.error);
+      throw new UnprocessableContentException(DOWNLOAD_FILE_VALIDATION_CRITERIA,
+        getValidationErrors(validatedReq.error.issues));
     }
 
     const responseData = await s3Service.generateDownloadPresignedUrl(validatedReq.data.file_key);
