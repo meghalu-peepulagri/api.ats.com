@@ -30,10 +30,10 @@ export const vCreateApplicant = z.object({
     z.string({
       error: (issue) => {
         if (issue.input === undefined)
-          return "Phone number is required";
-        return "Invalid phone number";
+          return "Mobile number is required";
+        return "Invalid mobile number";
       },
-    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" }),
+    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid mobile number" }),
   ),
 
   email: z.email({
@@ -53,8 +53,8 @@ export const vCreateApplicant = z.object({
     z.number({
       error: (issue) => {
         if (issue.input === undefined)
-          return "Role is required";
-        return "Invalid role";
+          return "Position is required";
+        return "Invalid position";
       },
     }),
   ),

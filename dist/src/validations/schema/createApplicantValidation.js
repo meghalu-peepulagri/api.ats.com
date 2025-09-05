@@ -27,10 +27,10 @@ export const vCreateApplicant = z.object({
     phone: z.preprocess(val => val === "" ? undefined : val, z.string({
         error: (issue) => {
             if (issue.input === undefined)
-                return "Phone number is required";
-            return "Invalid phone number";
+                return "Mobile number is required";
+            return "Invalid mobile number";
         },
-    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid phone number" })),
+    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid mobile number" })),
     email: z.email({
         error: (issue) => {
             if (issue.input === undefined)
@@ -44,8 +44,8 @@ export const vCreateApplicant = z.object({
     role_id: z.preprocess(val => val === null ? undefined : val, z.number({
         error: (issue) => {
             if (issue.input === undefined)
-                return "Role is required";
-            return "Invalid role";
+                return "Position is required";
+            return "Invalid position";
         },
     })),
     experience: z.number().min(0, "Experience cannot be negative").max(50, "Experience seems invalid").nullable(),
