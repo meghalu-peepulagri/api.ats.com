@@ -152,15 +152,15 @@ class ApplicantsController {
       throw new NotFoundException(APPLICANT_NOT_FOUND);
     }
 
-    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id"], [validatedReqData.email, +applicantId], ["eq", "ne"]);
+    const existingApplicantEmail = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["email", "id","role_id"], [validatedReqData.email, +applicantId], ["eq", "ne","eq"]);
     if (existingApplicantEmail) {
       throw new ConflictException(EMAIL_EXISTED);
     }
 
-    const existingApplicantPhoneNumber = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["phone", "id"], [validatedReqData.phone, +applicantId], ["eq", "ne"]);
-    if (existingApplicantPhoneNumber) {
-      throw new ConflictException(PHONE_NUMBER_EXISTED);
-    }
+    // const existingApplicantPhoneNumber = await getSingleRecordByMultipleColumnValues<Applicant>(applicants, ["phone", "id"], [validatedReqData.phone, +applicantId], ["eq", "ne"]);
+    // if (existingApplicantPhoneNumber) {
+    //   throw new ConflictException(PHONE_NUMBER_EXISTED);
+    // }
     const { status, ...applicantData } = validatedReqData;
     const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, applicantData);
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
