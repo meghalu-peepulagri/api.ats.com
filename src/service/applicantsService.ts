@@ -89,11 +89,11 @@ export async function getRecordsCount(table: any, filters?: any) {
   return result[0].total;
 }
 
-export async function getAllComments(filters: any, offset: number, limit: number, applicantId: number) {
+export async function getAllComments(filters: any,applicantId: number) {
   const result = await db.query.comments.findMany({
     where: and(...filters, eq(comments.applicant_id, applicantId)),
-    offset,
-    limit,
+    // offset,
+    // limit,
     orderBy: [asc(comments.commented_at)],
     columns: {
       id: true,

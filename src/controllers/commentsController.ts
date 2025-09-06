@@ -44,9 +44,9 @@ class CommentsController {
   listCommentsByApplicantId = async (c: Context) => {
     const applicantId = +c.req.param("applicant_id");
     const query = c.req.query();
-    const page = +(query.page) || 1;
-    const limit = +(query.limit) || 10;
-    const offset = (page - 1) * limit;
+    // const page = +(query.page) || 1;
+    // const limit = +(query.limit) || 10;
+    // const offset = (page - 1) * limit;
     const filters = await applicantHelper.comments(query, applicantId);
     const applicantExists = await getSingleRecordByAColumnValue<Applicant>(applicants, "id", applicantId);
     if (!applicantExists || applicantExists.deleted_at !== null) {
@@ -54,10 +54,10 @@ class CommentsController {
     }
     const [total_records, commentsData] = await Promise.all([
       getRecordsCount(comments, filters),
-      getAllComments(filters, offset, limit, applicantId),
+      getAllComments(filters, applicantId),
     ]);
-    const paginationData = applicantHelper.getPaginationData(page, limit, total_records);
-    return sendResponse(c, 200, COMMENTS_FETCHED, { paginationInfo: paginationData, records: commentsData });
+    // const paginationData = applicantHelper.getPaginationData(total_records);
+    return sendResponse(c, 200, COMMENTS_FETCHED, {total_records,records: commentsData});
   };
 
   updateCommentByApplicantById = async (c: Context) => {
