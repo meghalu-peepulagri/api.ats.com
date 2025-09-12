@@ -1,0 +1,1 @@
+ALTER TABLE "applicants" ALTER COLUMN "experience" SET DATA TYPE real;

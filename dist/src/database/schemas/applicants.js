@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { index, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, real, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { roles } from "./roles.js";
 import { users } from "./users.js";
 export const applicants = pgTable("applicants", {
@@ -12,7 +12,7 @@ export const applicants = pgTable("applicants", {
     status: varchar("status"),
     education: text("education"),
     salary_expectation: text("salary_expectation"),
-    experience: integer("experience"),
+    experience: real("experience"),
     resume_key_path: text("resume_key_path").unique(),
     created_by: integer("created_by").references(() => users.id),
     updated_by: integer("updated_by").references(() => users.id),
