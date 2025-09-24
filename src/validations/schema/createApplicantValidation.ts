@@ -8,6 +8,7 @@ export enum applicantStatus {
   HIRED = "HIRED",
   REJECTED = "REJECTED",
   JOINED = "JOINED",
+  PIPELINE = "PIPELINE",
 }
 
 export const vCreateApplicant = z.object({
