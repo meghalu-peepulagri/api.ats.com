@@ -8,6 +8,7 @@ export var applicantStatus;
     applicantStatus["HIRED"] = "HIRED";
     applicantStatus["REJECTED"] = "REJECTED";
     applicantStatus["JOINED"] = "JOINED";
+    applicantStatus["PIPELINE"] = "PIPELINE";
 })(applicantStatus || (applicantStatus = {}));
 export const vCreateApplicant = z.object({
     first_name: z.string({
