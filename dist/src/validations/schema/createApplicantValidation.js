@@ -9,6 +9,7 @@ export var applicantStatus;
     applicantStatus["REJECTED"] = "REJECTED";
     applicantStatus["JOINED"] = "JOINED";
     applicantStatus["PIPELINE"] = "PIPELINE";
+    applicantStatus["NOT_YET_RESPONDED"] = "NOT_YET_RESPONDED";
 })(applicantStatus || (applicantStatus = {}));
 export const vCreateApplicant = z.object({
     first_name: z.string({

@@ -9,6 +9,7 @@ export enum applicantStatus {
   REJECTED = "REJECTED",
   JOINED = "JOINED",
   PIPELINE = "PIPELINE",
+  NOT_YET_RESPONDED = "NOT_YET_RESPONDED",
 }
 
 export const vCreateApplicant = z.object({

@@ -125,7 +125,7 @@ export async function applicantsStats() {
     stats[row.status] = Number(row.count);
   });
   const totalApplicants = applicantsData.rows.map((row: any) => Number(row.count)).reduce((acc, count) => acc + count, 0);
-  const screenedCount = (stats.SCREENED || 0) + (stats.HIRED || 0) + (stats.JOINED || 0) + (stats.REJECTED || 0) + (stats.INTERVIEWED || 0) + (stats.SCHEDULE_INTERVIEW || 0) + (stats.PIPELINE || 0);
+  const screenedCount = (stats.SCREENED || 0) + (stats.HIRED || 0) + (stats.JOINED || 0) + (stats.REJECTED || 0) + (stats.INTERVIEWED || 0) + (stats.SCHEDULE_INTERVIEW || 0) + (stats.PIPELINE || 0) + (stats.NOT_YET_RESPONDED || 0);
   return {
     totalApplicants,
     applied: stats.APPLIED || 0,
