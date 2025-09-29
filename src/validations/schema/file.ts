@@ -4,8 +4,8 @@ export const VUploadFileSchema = z.object({
   file_type: z
   .string()
   .refine(
-    val => val === "pdf" || val === "application/pdf", {
-      message: "Only PDF files are allowed",
+    val => val === "pdf" || val === "application/pdf" || val === "application/msword" || val === "application/vnd.openxmlformats-officedocument.wordprocessingml.document", {
+      message: "Only PDF & Word files are allowed",
     }
   ), // allows both
   file_name: z.string()

@@ -2,8 +2,8 @@ import { z } from "zod";
 export const VUploadFileSchema = z.object({
     file_type: z
         .string()
-        .refine(val => val === "pdf" || val === "application/pdf", {
-        message: "Only PDF files are allowed",
+        .refine(val => val === "pdf" || val === "application/pdf" || val === "application/msword" || val === "application/vnd.openxmlformats-officedocument.wordprocessingml.document", {
+        message: "Only PDF & Word files are allowed",
     }), // allows both
     file_name: z.string()
         .min(1, { message: "FILE_MISSING" })
