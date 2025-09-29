@@ -31,7 +31,7 @@ export const vCreateApplicant = z.object({
                 return "Mobile number is required";
             return "Invalid mobile number";
         },
-    }).trim().regex(/^(\+91)?[6-9]\d{9}$/, { message: "Invalid mobile number" })),
+    }).trim().regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid mobile number" })),
     email: z.email({
         error: (issue) => {
             if (issue.input === undefined)
