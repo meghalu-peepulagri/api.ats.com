@@ -89,7 +89,7 @@ export async function getRecordsCount(table: any, filters?: any) {
   return result[0].total;
 }
 
-export async function getAllComments(filters: any,applicantId: number) {
+export async function getAllComments(filters: any, applicantId: number) {
   const result = await db.query.comments.findMany({
     where: and(...filters, eq(comments.applicant_id, applicantId)),
     // offset,
@@ -148,6 +148,17 @@ export async function getApplicantByIdWithRelations(id: number) {
           role: true,
         },
       },
+      status_updated_by: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
+}
+
+
+export async function updatedApplicantStatusById(id: number, status: string, status_updated_by: number) {
+  return await db.update(applicants).set({ status, status_updated_at: new Date(), status_updated_by }).where(eq(applicants.id, id)).returning();
 }

@@ -16,6 +16,8 @@ export const applicants = pgTable("applicants", {
     resume_key_path: text("resume_key_path").unique(),
     created_by: integer("created_by").references(() => users.id),
     updated_by: integer("updated_by").references(() => users.id),
+    status_updated_at: timestamp("status_updated_at"),
+    status_updated_by: integer("status_updated_by").references(() => users.id),
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
     deleted_at: timestamp("deleted_at"),
@@ -28,4 +30,8 @@ export const applicantRelations = relations(applicants, ({ one }) => ({
         fields: [applicants.role_id],
         references: [roles.id],
     }),
+    status_updated_by: one(users, {
+        fields: [applicants.status_updated_by],
+        references: [users.id],
+    })
 }));

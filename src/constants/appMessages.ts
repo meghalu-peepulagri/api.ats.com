@@ -23,6 +23,7 @@ export const INVALID_PASSWORD = "Invalid password";
 export const INCORRECT_PASSWORD = "Incorrect password";
 export const EMAIL_REQUIRED = "Email is required";
 export const INVALID_EMAIL = "Invalid email";
+export const USER_LOGINED = "User logged in successfully";
 
 // comment
 

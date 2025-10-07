@@ -130,6 +130,15 @@ export async function getApplicantByIdWithRelations(id) {
                     role: true,
                 },
             },
+            status_updated_by: {
+                columns: {
+                    id: true,
+                    name: true,
+                },
+            },
         },
     });
+}
+export async function updatedApplicantStatusById(id, status, status_updated_by) {
+    return await db.update(applicants).set({ status, status_updated_at: new Date(), status_updated_by }).where(eq(applicants.id, id)).returning();
 }

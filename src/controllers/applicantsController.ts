@@ -4,14 +4,14 @@ import type { Applicant } from "../database/schemas/applicants.js";
 import type { User } from "../database/schemas/users.js";
 import type { TCreateApplicant } from "../validations/schema/createApplicantValidation.js";
 
-import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_EXISTED_WITH_SAME_ROLE, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PHONE_NUMBER_EXISTED, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
+import { ADD_APPLICANT_VALIDATION_CRITERIA, APPLICANT_CREATED, APPLICANT_DELETED, APPLICANT_EXISTED_WITH_SAME_ROLE, APPLICANT_FOUND, APPLICANT_ID_REQUIRED, APPLICANT_NOT_FOUND, APPLICANT_UPDATED, APPLICANTS_FOUND, APPLICANTS_STATS_FOUND, EMAIL_EXISTED, INVALID_APPLICANT_ID, INVALID_STATUS, PRESIGNEDURL_NOT_FOUND, ROLE_IS_REQUIRED, STATUS_IS_REQUIRED } from "../constants/appMessages.js";
 import { applicants } from "../database/schemas/applicants.js";
 import BadRequestException from "../exceptions/badRequestException.js";
 import ConflictException from "../exceptions/conflictException.js";
 import NotFoundException from "../exceptions/notFoundException.js";
 import { ApplicantHelper } from "../helper/applicantHelper.js";
-import { applicantsStats, getApplicantByIdWithRelations, getRecordsCount, listApplicants } from "../service/applicantsService.js";
-import { getRecordById, getSingleRecordByAColumnValue, getSingleRecordByMultipleColumnValues, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
+import { applicantsStats, getApplicantByIdWithRelations, getRecordsCount, listApplicants, updatedApplicantStatusById } from "../service/applicantsService.js";
+import { getRecordById, getSingleRecordByMultipleColumnValues, saveSingleRecord, softDeleteRecordById, updateRecordById } from "../service/db/baseDbService.js";
 import S3FileService from "../service/s3Service.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { applicantStatus } from "../validations/schema/createApplicantValidation.js";
@@ -95,9 +95,10 @@ class ApplicantsController {
     if (!Object.values(applicantStatus).includes(updatedStatus)) {
       throw new BadRequestException(INVALID_STATUS);
     }
-    const updatedApplicant = await updateRecordById<Applicant>(applicants, +applicantId, { status: updatedStatus });
+    const updatedApplicant = await updatedApplicantStatusById(+applicantId, updatedStatus, c.get("user_payload").id);
     return sendResponse(c, 200, APPLICANT_UPDATED, updatedApplicant);
   };
+
 
   applicantStats = async (c: Context) => {
     const stats = await applicantsStats();

@@ -1,8 +1,8 @@
 import argon2 from "argon2";
 import { setCookie } from "hono/cookie";
 import { appConfig } from "../config/appConfig.js";
-import { ADD_USER_VALIDATION_CRITERIA, EMAIL_EXISTED, INVALID_CREDENTIALS, LOGIN_VALIDATION_CRETERIA, PHONE_NUMBER_EXISTED, USER_CREATED } from "../constants/appMessages.js";
-import { CREATED } from "../constants/httpStatusCodes.js";
+import { ADD_USER_VALIDATION_CRITERIA, EMAIL_EXISTED, INVALID_CREDENTIALS, LOGIN_VALIDATION_CRETERIA, PHONE_NUMBER_EXISTED, USER_CREATED, USER_LOGINED } from "../constants/appMessages.js";
+import { CREATED, OK } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import ConflictException from "../exceptions/conflictException.js";
 import UnauthorizedException from "../exceptions/unAuthorizedException.js";
@@ -44,7 +44,7 @@ class UsersController {
         const tokensData = await genJWTTokensForUser(loginUser.id);
         setCookie(c, "access_token", tokensData.access_token, { domain: appConfig.cookie_domain, httpOnly: true });
         const respData = { ...tokensData, user };
-        return sendResponse(c, CREATED, USER_CREATED, respData);
+        return sendResponse(c, OK, USER_LOGINED, respData);
     };
 }
 ;

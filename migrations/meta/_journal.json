@@ -64,6 +64,13 @@
       "when": 1757644077033,
       "tag": "0008_certain_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1759829029263,
+      "tag": "0009_late_dragon_lord",
+      "breakpoints": true
     }
   ]
 }
